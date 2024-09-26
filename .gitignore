@@ -1,0 +1,13 @@
+# Ignore all target directories
+.config/
+.sonarqube/
+.store/
+.vs/
+lib-vau-csharp/obj
+lib-vau-csharp/bin
+lib-vau-csharp-test/obj
+lib-vau-csharp-test/bin
+lib-vau-csharp-test/TestResults/
+sonarqubecoverage/
+/jenkinsfiles/
+/doc/

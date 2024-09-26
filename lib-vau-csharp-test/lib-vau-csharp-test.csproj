@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net4.7.2</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="resources\ocsp-response-vau-sig.der" />
+    <None Remove="resources\vau-sig-key.der" />
+    <None Remove="resources\vau_sig_cert.der" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="resources\ocsp-response-vau-sig.der">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\vau_sig_cert.der">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\vau-sig-key.der">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="nunit" Version="3.10.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+    <ProjectReference Include="..\lib-vau-csharp\lib-vau-csharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="resources\vau-sig-key.der">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\vau_server_keys.cbor">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  
+</Project>
