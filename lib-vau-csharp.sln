@@ -1,0 +1,47 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.35116.124
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lib-vau-csharp", "lib-vau-csharp\lib-vau-csharp.csproj", "{0A2D306D-909F-4480-A2AF-437B83AB2483}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jenkinsfiles", "jenkinsfiles", "{0BC2AF7A-EBD6-4F0E-90C3-F375BFDBFE1A}"
+	ProjectSection(SolutionItems) = preProject
+		jenkinsfiles\ci.jenkinsfile = jenkinsfiles\ci.jenkinsfile
+		jenkinsfiles\dependabot.jenkinsfile = jenkinsfiles\dependabot.jenkinsfile
+		jenkinsfiles\publishToGitHub.jenkinsfile = jenkinsfiles\publishToGitHub.jenkinsfile
+		jenkinsfiles\pullFromGitHubToGitLab.jenkinsfile = jenkinsfiles\pullFromGitHubToGitLab.jenkinsfile
+		jenkinsfiles\release.jenkinsfile = jenkinsfiles\release.jenkinsfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ospo", "ospo", "{AE21E090-37AB-4B8D-87E2-05C5846AA21C}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+		ReleaseNotes.md = ReleaseNotes.md
+		SECURITY.md = SECURITY.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lib-vau-csharp-test", "lib-vau-csharp-test\lib-vau-csharp-test.csproj", "{CECC4305-C44C-4344-B733-48EFBB3E148C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A2D306D-909F-4480-A2AF-437B83AB2483}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A2D306D-909F-4480-A2AF-437B83AB2483}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A2D306D-909F-4480-A2AF-437B83AB2483}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A2D306D-909F-4480-A2AF-437B83AB2483}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CECC4305-C44C-4344-B733-48EFBB3E148C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CECC4305-C44C-4344-B733-48EFBB3E148C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CECC4305-C44C-4344-B733-48EFBB3E148C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CECC4305-C44C-4344-B733-48EFBB3E148C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {661E9A44-47AB-42A0-9ADA-B95AC4BF6CD4}
+	EndGlobalSection
+EndGlobal
