@@ -30,7 +30,6 @@ namespace lib_vau_csharp.util
 
         public static byte[] DecodeByteValueFromCbor(CBORObject cborObject)
         {
-            // Switch Case für bessere Lesbarkeit
             switch (cborObject.Type)
             {
                 case CBORType.ByteString:

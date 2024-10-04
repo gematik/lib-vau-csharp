@@ -49,21 +49,19 @@ namespace lib_vau_csharp_test
         [Test]
         public void SimpleTest()
         {
-            KEM kem = KEM.initializeKEM(KEM.KEMEngines.AesEngine, KEM.KEYSIZE_256);
             VauClientStateMachine client;
             VauServerStateMachine server;
 
-            client = new VauClientStateMachine();
-            client.initializeMachine(kem);
-            server = new VauServerStateMachine(signedPublicVauKeys, eccKyberKeyPair);
-            server.initializeMachine(kem);
+            Assert.DoesNotThrow(() => {
+                client = new VauClientStateMachine();
+                server = new VauServerStateMachine(signedPublicVauKeys, eccKyberKeyPair);
 
-            byte[] pMessage1 = client.generateMessage1();
-            byte[] pMessage2 = server.receiveMessage1(pMessage1);
-            byte[] pMessage3 = client.receiveMessage2(pMessage2);
-            byte[] pMessage4 = server.receiveMessage3(pMessage3);
-            client.receiveMessage4(pMessage4);
+                byte[] pMessage1 = client.generateMessage1();
+                byte[] pMessage2 = server.receiveMessage1(pMessage1);
+                byte[] pMessage3 = client.receiveMessage2(pMessage2);
+                byte[] pMessage4 = server.receiveMessage3(pMessage3);
+                client.receiveMessage4(pMessage4);
+            });
         }
-
     }
 }

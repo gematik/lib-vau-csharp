@@ -13,6 +13,11 @@ Dieses Repository dient als Beispielimplementierung in C# und implementiert den 
 > Die Implementierung mit BouncyCastle beinhaltet auch ein Workaround, welcher implementiert werden musste, damit diese kompatibel mit der Spezifikation wie in [Kapitel 7.1] beschrieben ist. Dies betrifft die Erzeugung von Kyber Schlüssel nach dem Kyber Release v3.0.2. In BouncyCastle wurde bereits die Draft Implementierung FIPS 203 umgesetzt, welche inkompatibel mit diesem Kyber Release ist. Dieser Workaround ist auf der folgenden Seite beschrieben worden:
 > https://words.filippo.io/dispatches/mlkem768/#bonus-track-using-a-ml-kem-implementation-as-kyber-v3
 
+> [!IMPORTANT]
+> Die Umsetzung der Funktion toJSONString() in der Peter.O.Cbor Bibliothek fu´nktioniert nicht fehlerfrei. Daher wurde darauf verzichtet jedes CBORObject in ein JSOBObject zu wandeln.
+> https://github.com/peteroupc/CBOR/blob/master/docs/PeterO.Cbor.CBORObject.md
+> "Note that the conversion from CBOR to JSON is not always without loss and may make it impossible to recover the original object when converting the JSON back to CBOR. See the ToJSONString documentation."
+
 ## VAU Handshake
 <!--
 In der Datei [VauHandshakeTest.cs](lib-vau-csharp-test/VauHandshakeTest.cs) befindet sich eine Beispielimplementierung des gesamten Handshakes wie er in der Spezifikation im [Kapitel 7.1](https://gemspec.gematik.de/docs/gemSpec/gemSpec_Krypt/latest/#7.1) beschrieben ist:

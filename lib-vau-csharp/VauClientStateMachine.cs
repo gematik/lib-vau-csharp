@@ -25,19 +25,17 @@ namespace lib_vau_csharp
 {
     public class VauClientStateMachine : AbstractVauStateMachine
     {
-        private VauMessage1 vauMessage1;
-        private EccKyberKeyPair clientKeyPair1;
+        private readonly VauMessage1 vauMessage1;
+        private readonly EccKyberKeyPair clientKeyPair1;
         private KdfKey1 kdfClientKey1;
         private KdfKey2 kdfClientKey2;
         private byte[] clientTranscript = new byte[0];
-        private KEM kem = null;
+        private readonly KEM kem = KEM.initializeKEM(KEM.KEMEngines.AesEngine, KEM.KEYSIZE_256);
         private KdfMessage clientKemResult1, clientKemResult2;
         private long requestCounter { get; set; } = 0;
 
-        public override void initializeMachine(KEM k)
+        public VauClientStateMachine()
         {
-            kem = k;
-
             clientKeyPair1 = EccKyberKeyPair.GenerateKeyPair(); // A_24428: 1/2. generate ECC-Keypair with Curve P-256 and Kyber768
             vauMessage1 = new VauMessage1(clientKeyPair1);
         }
@@ -130,7 +128,7 @@ namespace lib_vau_csharp
         {
             if (requestByte != 2)
             {
-                throw new InvalidOperationException("Request byte was unexpected. Expected 1, but got " + requestByte);
+                throw new InvalidOperationException("Request byte was unexpected. Expected 2, but got " + requestByte);
             }
         }
 

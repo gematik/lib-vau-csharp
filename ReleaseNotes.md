@@ -2,6 +2,17 @@
 
 # Release notes lib-vau-csharp for ePA 3.x and above
 
+## Release 1.0.1
+
+### added
+- add WebServer / WebClient 
+- add integration test
+  - Example for VAU handshake with WebClient / WebServer
+  - Example for Encryption / Decryption with WebClient / WebServer
+
+### fixed
+- error message VauClientStateMachine.CheckRequestByte
+
 ## Release 1.0.0
 - Initial version
 - Available functions:

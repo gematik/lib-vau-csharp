@@ -34,9 +34,20 @@ namespace lib_vau_csharp
         private byte[] serverTranscript;
         private KdfKey2 serverKey2;
         private static readonly int ExpirationDays = 30;
-        private KEM kem = null;
+        private readonly KEM kem = KEM.initializeKEM(KEM.KEMEngines.AesEngine, KEM.KEYSIZE_256);
         private long clientRequestCounter { get; set; }
+        public VauServerStateMachine(SignedPublicVauKeys signedPublicVauKeys, EccKyberKeyPair serverVauKeys) : base()
+        {
+            int iat = signedPublicVauKeys.ExtractVauKeys().Iat;
+            int exp = signedPublicVauKeys.ExtractVauKeys().Exp;
+            if (exp - iat > ExpirationDays * 60 * 60 * 24)
+            {
+                throw new ArgumentException("Dates of initialization and expiration of server keys can be only up to 30 days apart.");
+            }
 
+            this.signedPublicVauKeys = signedPublicVauKeys;
+            this.serverVauKeys = serverVauKeys;
+        }
         protected override byte GetRequestByte()
         {
             return 2;
@@ -63,24 +74,6 @@ namespace lib_vau_csharp
             {
                 throw new InvalidOperationException("Request byte was unexpected. Expected 1, but got " + requestByte);
             }
-        }
-
-        public VauServerStateMachine(SignedPublicVauKeys signedPublicVauKeys, EccKyberKeyPair serverVauKeys) : base()
-        {
-            int iat = signedPublicVauKeys.ExtractVauKeys().Iat;
-            int exp = signedPublicVauKeys.ExtractVauKeys().Exp;
-            if (exp - iat > ExpirationDays * 60 * 60 * 24)
-            {
-                throw new ArgumentException("Dates of initialization and expiration of server keys can be only up to 30 days apart.");
-            }
-
-            this.signedPublicVauKeys = signedPublicVauKeys;
-            this.serverVauKeys = serverVauKeys;
-        }
-
-        public override void initializeMachine(KEM k)
-        {
-            kem = k;
         }
 
         public byte[] receiveMessage1(byte[] message1Encoded)
