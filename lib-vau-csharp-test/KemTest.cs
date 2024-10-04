@@ -53,12 +53,8 @@ namespace lib_vau_csharp_test
             VauPublicKeys vauBasicPublicKey = new VauPublicKeys(eccKyberKeyPair, "VAU Server Keys", TimeSpan.FromDays(30));
             SignedPublicVauKeys signedPublicVauKeys = SignedPublicVauKeys.Sign(serverAutCertificate, eCPrivateKeyParameters, ocspResponseAutCertificate, 1, vauBasicPublicKey);
 
-
-            KEM kem = KEM.initializeKEM(KEM.KEMEngines.AesEngine, KEM.KEYSIZE_256);
             VauServerStateMachine vauServerStateMachine = new VauServerStateMachine(signedPublicVauKeys, eccKyberKeyPair);
-            vauServerStateMachine.initializeMachine(kem);
             VauClientStateMachine vauClientStateMachine = new VauClientStateMachine();
-            vauClientStateMachine.initializeMachine(kem);
 
             //Generate Message 1
             byte[] message1Encoded = vauClientStateMachine.generateMessage1();

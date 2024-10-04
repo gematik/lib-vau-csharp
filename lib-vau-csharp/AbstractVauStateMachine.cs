@@ -27,8 +27,6 @@ namespace lib_vau_csharp
     {
         private static int MinimumCiphertextLength = 1 + 1 + 1 + 8 + 32 + 12 + 1 + 16; //A_24628
 
-        public abstract void initializeMachine(KEM k);
-
         protected abstract byte GetRequestByte();
 
         protected abstract long GetRequestCounter();
@@ -110,4 +108,4 @@ namespace lib_vau_csharp
         }
     }
 }
-            //sehr viel Magic Numbers, Vorschlag als const Wert mit sprechenden Namen deklarieren
+//sehr viel Magic Numbers, Vorschlag als const Wert mit sprechenden Namen deklarieren
