@@ -2,6 +2,11 @@
 
 # Release notes lib-vau-csharp for ePA 3.x and above
 
+## Release 1.0.2
+
+### fixed
+- fix bug in aes encryption class, change IV-handling
+
 ## Release 1.0.1
 
 ### added

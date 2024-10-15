@@ -74,8 +74,8 @@ namespace lib_vau_csharp.Tests
         public void NegativInstanziationTests()
         {
             var tooShortIv = new byte[] { 0x00 };
-            Assert.Throws<ArgumentNullException>(() => new AesGcm(null, assocData, key));         // Must be thrown because of missing iv
-            Assert.Throws<ArgumentNullException>(() => new AesGcm(tooShortIv, assocData, key));   // Must be thrown because of to few byte for iv
+            Assert.Throws<ArgumentNullException>(() => new AesGcm(null, assocData, key));         // Must be thrown because of missing random
+            Assert.Throws<ArgumentNullException>(() => new AesGcm(tooShortIv, assocData, key));   // Must be thrown because of to few byte for random
 
             var tooShortKey = new byte[] { 0x00 };
             Assert.Throws<ArgumentNullException>(() => new AesGcm(iv, assocData, null));          // Must be thrown because of missing key
