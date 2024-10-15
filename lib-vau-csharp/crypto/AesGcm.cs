@@ -53,7 +53,7 @@ namespace lib_vau_csharp.crypto
         private void initializeAes(byte[] random, byte[] assocData, byte[] key)
         {
             KeyParameter keyParam = ParameterUtilities.CreateKeyParameter("AES", key);
-            ivValue = initializeIV(random.Take(random.Length - 8).ToArray(), 1);
+            ivValue = initializeIV(random.Take(random.Length - 8).ToArray(), BitConverter.ToInt64(random.Skip(random.Length - 8).Reverse().ToArray(), 0));
             var aes_parameters = new AeadParameters(keyParam, 128, ivValue, assocData);
             m_encCipher.Init(true, aes_parameters);
             m_decCipher.Init(false, aes_parameters);
