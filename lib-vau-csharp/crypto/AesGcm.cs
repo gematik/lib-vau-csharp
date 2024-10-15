@@ -27,39 +27,41 @@ namespace lib_vau_csharp.crypto
         private readonly IBufferedCipher m_encCipher = CipherUtilities.GetCipher("AES/GCM/NoPadding");
         private readonly IBufferedCipher m_decCipher = CipherUtilities.GetCipher("AES/GCM/NoPadding");
 
+        public byte[] ivValue { get; set; }
+
         public AesGcm(
-            byte[] iv,
+            byte[] random,
             byte[] assocData,
             byte[] key
         )
         {
+            // Random value must be a minimum of 8 bytes
+            if (random == null || random?.Length < 8)
+            {
+                throw new ArgumentNullException(nameof(random), "Invalid random value!");
+            }
+
             // A_24628 -> 32 Byte KeyID aus dem Handshake
-            if (key?.Length != 32)
+            if (key == null || key?.Length != 32)
             {
                 throw new ArgumentNullException(nameof(key), "Invalid key value!");
             }
 
-            // A_24628 -> 32 Bit Zufall + 64 Bit Verschlüsselungszähler
-            if (iv?.Length != 12)
-            {
-                throw new ArgumentNullException(nameof(iv), "Invalid iv value!");
-            }
-
-            initializeAes(iv, assocData, key);
+            initializeAes(random, assocData, key);
         }
 
-        private void initializeAes(byte[] iv, byte[] assocData, byte[] key)
+        private void initializeAes(byte[] random, byte[] assocData, byte[] key)
         {
             KeyParameter keyParam = ParameterUtilities.CreateKeyParameter("AES", key);
-            var nonce = initializeIV(iv.Take(iv.Length - 8).ToArray(), 1);
-            var aes_parameters = new AeadParameters(keyParam, 128, nonce, assocData);
+            ivValue = initializeIV(random.Take(random.Length - 8).ToArray(), 1);
+            var aes_parameters = new AeadParameters(keyParam, 128, ivValue, assocData);
             m_encCipher.Init(true, aes_parameters);
             m_decCipher.Init(false, aes_parameters);
         }
 
         private static byte[] initializeIV(byte[] random, long lCounter)
         {
-            // A_24628 -> Random value must be 32 bit value
+            // A_24628 -> 32 Bit Random + 64 Bit Verschlüsselungszähler
             if (random?.Length != 4)
             {
                 throw new ArgumentNullException(nameof(random), "Invalid random value!");

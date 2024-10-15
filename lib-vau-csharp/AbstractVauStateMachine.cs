@@ -53,11 +53,11 @@ namespace lib_vau_csharp
 
             byte[] a = new byte[4];
             new SecureRandom().NextBytes(a);
-            byte[] iv = a.Concat(requestCounterBytes).ToArray();
+            byte[] random = a.Concat(requestCounterBytes).ToArray();
 
-            AesGcm aesGcm = new AesGcm(iv, header, encryptionVauKey);
+            AesGcm aesGcm = new AesGcm(random, header, encryptionVauKey);
             byte[] ciphertext = aesGcm.encryptData(plaintext);
-            byte[][] concatBytes = new byte[][] { header, iv, ciphertext };
+            byte[][] concatBytes = new byte[][] { header, aesGcm.ivValue, ciphertext };
             byte[] bytes = Arrays.ConcatenateAll(concatBytes);
             return bytes;
         }
