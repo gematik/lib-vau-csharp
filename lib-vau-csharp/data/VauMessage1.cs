@@ -41,9 +41,14 @@ namespace lib_vau_csharp.data
             return JsonConvert.SerializeObject(this);
         }
 
-        public byte[] toCBOR()
+        public byte[] toCbor()
         {
-            return CborUtils.EncodeToCbor(this);
+            CBORObject cborVauKey = CBORObject.NewOrderedMap();     // Reihenfolge Tags wird beibehalten (prinzipiell ist die Reihenfolge egal)
+            cborVauKey.Add("MessageType", _messageType);
+            cborVauKey.Add("ECDH_PK", CBORObject.NewMap().Add("x", EcdhPublicKey.X).Add("y", EcdhPublicKey.Y).Add("crv", "P-256"));
+            cborVauKey.Add("Kyber768_PK",  KyberPublicKeyBytes);
+
+            return cborVauKey.EncodeToBytes();
         }
 
         public static VauMessage1 fromCbor(byte[] encodedObject)

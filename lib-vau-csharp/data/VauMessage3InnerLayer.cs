@@ -41,6 +41,16 @@ namespace lib_vau_csharp.data
             Eso = eso;
         }
 
+        public byte[] toCbor() {
+          CBORObject cborVauKey = CBORObject.NewOrderedMap();     // Reihenfolge Tags wird beibehalten (prinzipiell ist die Reihenfolge egal)
+          cborVauKey.Add("ECDH_ct", EcdhCt);
+          cborVauKey.Add("Kyber768_ct", KyberCt);
+          cborVauKey.Add("ERP",  Erp);
+          cborVauKey.Add("ESO",  Eso);
+
+          return cborVauKey.EncodeToBytes();
+        }
+
         public static VauMessage3InnerLayer fromCbor(byte[] encodedObject)
         {
             try
