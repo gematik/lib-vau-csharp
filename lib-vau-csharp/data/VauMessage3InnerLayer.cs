@@ -42,7 +42,7 @@ namespace lib_vau_csharp.data
         }
 
         public byte[] toCbor() {
-          CBORObject cborVauKey = CBORObject.NewOrderedMap();     // Reihenfolge Tags wird beibehalten (prinzipiell ist die Reihenfolge egal)
+          CBORObject cborVauKey = CBORObject.NewOrderedMap();
           cborVauKey.Add("ECDH_ct", EcdhCt);
           cborVauKey.Add("Kyber768_ct", KyberCt);
           cborVauKey.Add("ERP",  Erp);
