@@ -19,6 +19,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using System;
 using System.Linq;
+using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace lib_vau_csharp.crypto
 {
@@ -29,14 +30,13 @@ namespace lib_vau_csharp.crypto
 
         public byte[] ivValue { get; set; }
 
-        public AesGcm(
-            byte[] random,
+        public void initAESForEncryption(byte[] random,
+            long lCounter,
             byte[] assocData,
-            byte[] key
-        )
+            byte[] key)
         {
-            // Random value must be a minimum of 8 bytes
-            if (random == null || random?.Length < 8)
+            // True Random value must be a minimum of 4 bytes
+            if (random == null || random?.Length < 4)
             {
                 throw new ArgumentNullException(nameof(random), "Invalid random value!");
             }
@@ -47,18 +47,36 @@ namespace lib_vau_csharp.crypto
                 throw new ArgumentNullException(nameof(key), "Invalid key value!");
             }
 
-            initializeAes(random, assocData, key);
-        }
-
-        private void initializeAes(byte[] random, byte[] assocData, byte[] key)
-        {
             KeyParameter keyParam = ParameterUtilities.CreateKeyParameter("AES", key);
-            ivValue = initializeIV(random.Take(random.Length - 8).ToArray(), 1);
+            ivValue = initializeIV(random, lCounter);
             var aes_parameters = new AeadParameters(keyParam, 128, ivValue, assocData);
             m_encCipher.Init(true, aes_parameters);
             m_decCipher.Init(false, aes_parameters);
         }
 
+        public void initAESForDecryption(byte[] iv,
+            byte[] assocData,
+            byte[] key)
+        {
+            // True Random value must be a minimum of 4 bytes
+            if (iv == null || iv?.Length < 4)
+            {
+                throw new ArgumentNullException(nameof(iv), "Invalid iv value!");
+            }
+
+            // A_24628 -> 32 Byte KeyID aus dem Handshake
+            if (key == null || key?.Length != 32)
+            {
+                throw new ArgumentNullException(nameof(key), "Invalid key value!");
+            }
+
+            KeyParameter keyParam = ParameterUtilities.CreateKeyParameter("AES", key);
+            ivValue = iv;
+            var aes_parameters = new AeadParameters(keyParam, 128, ivValue, assocData);
+            m_encCipher.Init(true, aes_parameters);
+            m_decCipher.Init(false, aes_parameters);
+        }
+    
         private static byte[] initializeIV(byte[] random, long lCounter)
         {
             // A_24628 -> 32 Bit Random + 64 Bit Verschlüsselungszähler
@@ -69,7 +87,7 @@ namespace lib_vau_csharp.crypto
 
             byte[] counter = BitConverter.GetBytes(lCounter).Reverse().ToArray();   // A_24629, A_24631 -> 64 Bit encryption counter
             return random.Concat(counter).ToArray();                                // A_24628 -> concat random and counter
-        }
+        }        
 
         public byte[] encryptData(byte[] clearText)
         {

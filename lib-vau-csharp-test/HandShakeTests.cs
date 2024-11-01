@@ -18,6 +18,7 @@ using lib_vau_csharp;
 using lib_vau_csharp.data;
 using lib_vau_csharp_test.util;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using System;
@@ -65,9 +66,9 @@ namespace lib_vau_csharp_test
             vauClient = new VauClient();
             bool handshakeSucceeded = await vauClient.DoHandshake(url);
 
-            Assert.IsTrue(handshakeSucceeded);
+            ClassicAssert.IsTrue(handshakeSucceeded);
             bool messagesExchanged = await vauClient.SendMessage(url, Encoding.UTF8.GetBytes("Hello World!"));
-            Assert.IsTrue(messagesExchanged);
+            ClassicAssert.IsTrue(messagesExchanged);
         }
     }
 }

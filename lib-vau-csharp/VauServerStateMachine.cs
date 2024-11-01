@@ -90,7 +90,7 @@ namespace lib_vau_csharp
         public byte[] generateMessage2(byte[] aeadCiphertextMessage2)
         {
             VauMessage2 vauMessage2 = new VauMessage2(kemResult1.EcdhCt, kemResult1.KyberCt, aeadCiphertextMessage2);
-            byte[] message2Encoded = CborUtils.EncodeToCbor(vauMessage2);
+            byte[] message2Encoded = VauMessage2.toCBOR(vauMessage2).EncodeToBytes();
             serverTranscript = serverTranscript.Concat(message2Encoded).ToArray();
             return message2Encoded;
         }
@@ -101,7 +101,7 @@ namespace lib_vau_csharp
             KdfKey1 serverKey1 = kemResult1.getKDFKey1();
             c2s = serverKey1.ClientToServer;
             s2c = serverKey1.ServerToClient;
-            byte[] encodedSignedPublicVauKeys = CborUtils.EncodeToCbor(signedPublicVauKeys);
+            byte[] encodedSignedPublicVauKeys = SignedPublicVauKeys.toCBOR(signedPublicVauKeys).EncodeToBytes();
             byte[] aeadCiphertextMessage2 = kem.EncryptAead(s2c, encodedSignedPublicVauKeys);
             return aeadCiphertextMessage2;
         }
@@ -130,16 +130,16 @@ namespace lib_vau_csharp
 
         public byte[] createMessage4(VauMessage3 vauMessage3Server, byte[] serverTranscriptToCheck)
         {
-            byte[] clientTransciptHash = kem.DecryptAead(serverKey2.ClientToServerKeyKonfirmation, vauMessage3Server.AeadCtKeyKonfirmation);
+            byte[] clientTranscriptHash = kem.DecryptAead(serverKey2.ClientToServerKeyKonfirmation, vauMessage3Server.AeadCtKeyKonfirmation);
             byte[] clientVauHashCalculation = DigestUtils.Sha256(serverTranscriptToCheck);
-            if (!Enumerable.SequenceEqual(clientTransciptHash, clientVauHashCalculation))
+            if (!Enumerable.SequenceEqual(clientTranscriptHash, clientVauHashCalculation))
             {
                 throw new InvalidKeyException("Client transcript hash and vau calculation do not equal.");
             }
             byte[] serverTranscriptHash = DigestUtils.Sha256(serverTranscript);
             byte[] aeadCipherTextMessage4KeyKonfirmation = kem.EncryptAead(serverKey2.ServerToClientKeyKonfirmation, serverTranscriptHash);
             VauMessage4 vauMessage4 = new VauMessage4(aeadCipherTextMessage4KeyKonfirmation);
-            byte[] vauMessage4Encoded = CborUtils.EncodeToCbor(vauMessage4);
+            byte[] vauMessage4Encoded = VauMessage4.toCBOR(vauMessage4).EncodeToBytes();
             return vauMessage4Encoded;
         }
     }

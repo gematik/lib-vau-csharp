@@ -21,16 +21,14 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using PeterO.Cbor;
 using System;
+using System.Net;
 
 namespace lib_vau_csharp.data
 {
     public class VauEccPublicKey
     {
-        [JsonProperty("crv")]
         public string Crv { get; set; }
-        [JsonProperty("x")]
         public byte[] X { get; set; }
-        [JsonProperty("y")]
         public byte[] Y { get; set; }
 
         public VauEccPublicKey(ECPublicKeyParameters eCPublicKeyParameters)
@@ -41,7 +39,7 @@ namespace lib_vau_csharp.data
         }
 
         [JsonConstructor]
-        public VauEccPublicKey([JsonProperty("crv")] string crv, [JsonProperty("x")] byte[] x, [JsonProperty("y")] byte[] y)
+        public VauEccPublicKey(string crv, byte[] x, byte[] y)
         {
             Crv = crv;
             X = x;
@@ -52,6 +50,14 @@ namespace lib_vau_csharp.data
         {
             EllipticCurve ecCurve = EllipticCurve.GenerateEllipticCurve(EllipticCurve.SECP256R1);
             return ecCurve.GetPublicKeyFromCoordinates(new BigInteger(1, X, 0, X.Length), new BigInteger(1, Y, 0, Y.Length));
+        }
+
+        public static CBORObject toCBOR(VauEccPublicKey ecPubKey)
+        {
+            return CBORObject.NewMap()
+                .Add("crv", ecPubKey.Crv)
+                .Add("x", ecPubKey.X)
+                .Add("y", ecPubKey.Y);
         }
 
         public static VauEccPublicKey fromCbor(CBORObject cborObject)

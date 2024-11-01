@@ -23,22 +23,27 @@ namespace lib_vau_csharp.data
 {
     public class VauMessage3InnerLayer
     {
-        [JsonProperty("ECDH_ct")]
         public VauEccPublicKey EcdhCt { get; private set; }
-        [JsonProperty("Kyber768_ct")]
         public byte[] KyberCt { get; private set; }
-        [JsonProperty("ERP")]
         public bool Erp { get; private set; }
-        [JsonProperty("ESO")]
         public bool Eso { get; private set; }
 
         [JsonConstructor]
-        public VauMessage3InnerLayer([JsonProperty("ECDH_ct")] VauEccPublicKey ecdhCt, [JsonProperty("Kyber768_ct")] byte[] kyberCt, [JsonProperty("ERP")] bool erp, [JsonProperty("ESO")] bool eso)
+        public VauMessage3InnerLayer(VauEccPublicKey ecdhCt, byte[] kyberCt, bool erp, bool eso)
         {
             EcdhCt = ecdhCt;
             KyberCt = kyberCt;
             Erp = erp;
             Eso = eso;
+        }
+
+        public static CBORObject toCBOR(VauMessage3InnerLayer innerLayer)
+        {
+            return CBORObject.NewMap()
+                .Add("ECDH_ct", VauEccPublicKey.toCBOR(innerLayer.EcdhCt))
+                .Add("Kyber768_ct", innerLayer.KyberCt)
+                .Add("ERP", innerLayer.Erp)
+                .Add("ESO", innerLayer.Eso);
         }
 
         public static VauMessage3InnerLayer fromCbor(byte[] encodedObject)

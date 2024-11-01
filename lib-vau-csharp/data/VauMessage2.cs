@@ -24,13 +24,9 @@ namespace lib_vau_csharp.data
     public class VauMessage2
     {
         private const string _messageType = "M2";
-        [JsonProperty("MessageType")]
         public string MessageType => _messageType;
-        [JsonProperty("ECDH_ct")]
         public VauEccPublicKey EcdhCt { get; private set; }
-        [JsonProperty("Kyber768_ct")]
         public byte[] KyberCt { get; private set; }
-        [JsonProperty("AEAD_ct")]
         public byte[] AeadCt { get; private set; }
 
         public VauMessage2(VauEccPublicKey ecdhCt, byte[] kyberCt, byte[] aeadCt)
@@ -38,6 +34,15 @@ namespace lib_vau_csharp.data
             this.EcdhCt = ecdhCt;
             this.KyberCt = kyberCt;
             this.AeadCt = aeadCt;
+        }
+
+        public static CBORObject toCBOR(VauMessage2 message2 )
+        {
+            return CBORObject.NewMap()
+                .Add("MessageType", message2.MessageType)
+                .Add("ECDH_ct", VauEccPublicKey.toCBOR(message2.EcdhCt))
+                .Add("Kyber768_ct", message2.KyberCt)
+                .Add("AEAD_ct", message2.AeadCt);
         }
 
         public static VauMessage2 fromCbor(byte[] encodedObject)

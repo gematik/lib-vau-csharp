@@ -22,12 +22,6 @@ namespace lib_vau_csharp.util
 {
     public static class CborUtils
     {
-        public static byte[] EncodeToCbor(object objectToDecode)
-        {
-            string serializedObject = JsonConvert.SerializeObject(objectToDecode);
-            return CBORObject.FromJSONString(serializedObject).EncodeToBytes();
-        }
-
         public static byte[] DecodeByteValueFromCbor(CBORObject cborObject)
         {
             switch (cborObject.Type)
