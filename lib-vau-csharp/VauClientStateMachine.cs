@@ -42,7 +42,7 @@ namespace lib_vau_csharp
 
         public byte[] generateMessage1()
         {
-            this.clientTranscript = this.vauMessage1.toCBOR();  // A_24428: encode in CBOR
+            this.clientTranscript = VauMessage1.toCBOR(this.vauMessage1).EncodeToBytes();  // A_24428: encode in CBOR
             return this.clientTranscript;
         }
 
@@ -81,7 +81,7 @@ namespace lib_vau_csharp
             byte[] transcriptClientHash = DigestUtils.Sha256(clientTranscriptToSend);
             byte[] aeadCipherTextMessage3KeyKonfirmation = kem.EncryptAead(kdfClientKey2.ClientToServerKeyKonfirmation, transcriptClientHash);
             VauMessage3 vauMessage3 = new VauMessage3(aeadCiphertextMessage3, aeadCipherTextMessage3KeyKonfirmation);
-            byte[] vauMessage3Encoded = CborUtils.EncodeToCbor(vauMessage3);
+            byte[] vauMessage3Encoded = VauMessage3.toCBOR(vauMessage3).EncodeToBytes();
             return vauMessage3Encoded;
         }
 
@@ -90,7 +90,7 @@ namespace lib_vau_csharp
             this.clientKemResult2 = KEM.EncapsulateMessage(transferredSignedServerPublicKeyList.EcdhPublicKey.ToEcPublicKey(), transferredSignedServerPublicKeyList.ToKyberPublicKey());
             VauMessage3InnerLayer vauMessage3InnerLayer = new VauMessage3InnerLayer(clientKemResult2.EcdhCt, clientKemResult2.KyberCt, false, false);
 
-            byte[] message3InnerLayerEncoded = CborUtils.EncodeToCbor(vauMessage3InnerLayer);
+            byte[] message3InnerLayerEncoded = VauMessage3InnerLayer.toCBOR(vauMessage3InnerLayer).EncodeToBytes();
             byte[] aeadCiphertextMessage3 = kem.EncryptAead(kdfClientKey1.ClientToServer, message3InnerLayerEncoded);
             return aeadCiphertextMessage3;
         }

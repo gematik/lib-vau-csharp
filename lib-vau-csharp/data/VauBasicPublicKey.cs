@@ -28,9 +28,7 @@ namespace lib_vau_csharp.data
 {
     public class VauBasicPublicKey
     {
-        [JsonProperty("ECDH_PK")]
         public VauEccPublicKey EcdhPublicKey { get; private set; }
-        [JsonProperty("Kyber768_PK")]
         public byte[] KyberPublicKeyBytes { get; set; }
 
         public VauBasicPublicKey(EccKyberKeyPair keyPair)
@@ -40,7 +38,7 @@ namespace lib_vau_csharp.data
         }
 
         [JsonConstructor]
-        public VauBasicPublicKey([JsonProperty("ECDH_PK")] VauEccPublicKey ecdhPublicKey, [JsonProperty("Kyber768_PK")] byte[] kyberPublicKeyBytes)
+        public VauBasicPublicKey(VauEccPublicKey ecdhPublicKey, byte[] kyberPublicKeyBytes)
         {
             EcdhPublicKey = ecdhPublicKey;
             KyberPublicKeyBytes = kyberPublicKeyBytes;

@@ -31,12 +31,11 @@ namespace lib_vau_csharp_test
         public void TestReadPrivateSpec()
         {
             EccKyberKeyPair eccKyberKeyPair = FileUtil.ReadEccKyberKeyPairFromFile(@"resources\\vau_server_keys.cbor");
+            Assert.That("EC", Is.EqualTo(((ECPublicKeyParameters)eccKyberKeyPair.EcdhKeyPair.Public).AlgorithmName));
+            Assert.That("EC", Is.EqualTo(((ECPrivateKeyParameters)eccKyberKeyPair.EcdhKeyPair.Private).AlgorithmName));
 
-            Assert.AreEqual("EC", ((ECPublicKeyParameters)eccKyberKeyPair.EcdhKeyPair.Public).AlgorithmName);
-            Assert.AreEqual("EC", ((ECPrivateKeyParameters)eccKyberKeyPair.EcdhKeyPair.Private).AlgorithmName);
-
-            Assert.AreEqual(KyberParameters.kyber768, ((KyberPrivateKeyParameters)eccKyberKeyPair.KyberKeyPair.Private).Parameters);
-            Assert.AreEqual(KyberParameters.kyber768, ((KyberPublicKeyParameters)eccKyberKeyPair.KyberKeyPair.Public).Parameters);
+            Assert.That(KyberParameters.kyber768, Is.EqualTo(((KyberPrivateKeyParameters)eccKyberKeyPair.KyberKeyPair.Private).Parameters));
+            Assert.That(KyberParameters.kyber768, Is.EqualTo(((KyberPublicKeyParameters)eccKyberKeyPair.KyberKeyPair.Public).Parameters));
         }
 
         [Test]
@@ -52,8 +51,8 @@ namespace lib_vau_csharp_test
             VauPublicKeys vauBasicPublicKey = new VauPublicKeys(eccKyberKeyPair, "VAU Server Keys", TimeSpan.FromDays(30));
             SignedPublicVauKeys signedPublicVauKeys = SignedPublicVauKeys.Sign(serverAutCertificate, eCPrivateKeyParameters, ocspResponseAutCertificate, 1, vauBasicPublicKey);
 
-            Assert.AreEqual(vauBasicPublicKey.Iat, signedPublicVauKeys.ExtractVauKeys().Iat);
-            Assert.AreEqual(vauBasicPublicKey.Exp, signedPublicVauKeys.ExtractVauKeys().Exp);
+            Assert.That(vauBasicPublicKey.Iat, Is.EqualTo(signedPublicVauKeys.ExtractVauKeys().Iat));
+            Assert.That(vauBasicPublicKey.Exp, Is.EqualTo(signedPublicVauKeys.ExtractVauKeys().Exp));
         }
     }
 }

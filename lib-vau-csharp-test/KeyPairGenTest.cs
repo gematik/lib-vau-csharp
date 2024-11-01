@@ -16,6 +16,7 @@
 
 using lib_vau_csharp.crypto;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
@@ -29,16 +30,16 @@ namespace lib_vau_csharp_test
         {
             EllipticCurve ecCurve = EllipticCurve.GenerateEllipticCurve(EllipticCurve.SECP256R1);
             AsymmetricCipherKeyPair ecdhKeyPair = ecCurve.GenerateKeyPair();
-            Assert.AreEqual("EC", ((ECPublicKeyParameters)ecdhKeyPair.Public).AlgorithmName);
-            Assert.AreEqual("EC", ((ECPrivateKeyParameters)ecdhKeyPair.Private).AlgorithmName);
+            ClassicAssert.AreEqual("EC", ((ECPublicKeyParameters)ecdhKeyPair.Public).AlgorithmName);
+            ClassicAssert.AreEqual("EC", ((ECPrivateKeyParameters)ecdhKeyPair.Private).AlgorithmName);
         }
 
         [Test]
         public void TestKyberKeyGen()
         {
             AsymmetricCipherKeyPair kyberKeyPair = KyberCurve.GenerateKeyPair();
-            Assert.AreEqual(KyberParameters.kyber768, ((KyberPrivateKeyParameters)kyberKeyPair.Private).Parameters);
-            Assert.AreEqual(KyberParameters.kyber768, ((KyberPublicKeyParameters)kyberKeyPair.Public).Parameters);
+            ClassicAssert.AreEqual(KyberParameters.kyber768, ((KyberPrivateKeyParameters)kyberKeyPair.Private).Parameters);
+            ClassicAssert.AreEqual(KyberParameters.kyber768, ((KyberPublicKeyParameters)kyberKeyPair.Public).Parameters);
         }
     }
 }

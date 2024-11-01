@@ -16,6 +16,7 @@
 
 using lib_vau_csharp.crypto;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using Org.BouncyCastle.Utilities.Encoders;
 using System;
 
@@ -45,41 +46,45 @@ namespace lib_vau_csharp.Tests
         [Test]
         public void TestwithReferenceData()
         {
-            AesGcm aesGcm = new AesGcm(iv, assocData, key);
+            AesGcm aesGcm = new AesGcm();
+            aesGcm.initAESForDecryption(iv, assocData, key);
             byte[] encryptedData = aesGcm.encryptData(clearText);
-            Assert.IsNotNull(encryptedData);
-            Assert.AreEqual(encryptedData, encData);
+            ClassicAssert.IsNotNull(encryptedData);
+            ClassicAssert.AreEqual(encryptedData, encData);
 
             byte[] decryptedData = aesGcm.decryptData(encryptedData);
-            Assert.IsNotNull(decryptedData);
-            Assert.IsTrue(clearText.Length == decryptedData.Length);
-            Assert.AreEqual(clearText, decryptedData);
+            ClassicAssert.IsNotNull(decryptedData);
+            ClassicAssert.IsTrue(clearText.Length == decryptedData.Length);
+            ClassicAssert.AreEqual(clearText, decryptedData);
         }
 
         [Test]
         public void EncryptionNegativTests()
         {
-            AesGcm aesGcm = new AesGcm(iv, assocData, key);
+            AesGcm aesGcm = new AesGcm();
+            aesGcm.initAESForDecryption(iv, assocData, key);
             Assert.Throws<ArgumentNullException>(() => aesGcm.encryptData(null));                 // Must be thrown because no data to encrypt
         }
 
         [Test]
         public void DecryptionNegativTests()
         {
-            AesGcm aesGcm = new AesGcm(iv, assocData, key);
+            AesGcm aesGcm = new AesGcm();
+            aesGcm.initAESForDecryption(iv, assocData, key);
             Assert.Throws<ArgumentNullException>(() => aesGcm.decryptData(null));                 // Must be thrown because no data to encrypt
         }
 
         [Test]
         public void NegativInstanziationTests()
         {
+            AesGcm aesGcm = new AesGcm();
             var tooShortIv = new byte[] { 0x00 };
-            Assert.Throws<ArgumentNullException>(() => new AesGcm(null, assocData, key));         // Must be thrown because of missing random
-            Assert.Throws<ArgumentNullException>(() => new AesGcm(tooShortIv, assocData, key));   // Must be thrown because of to few byte for random
+            Assert.Throws<ArgumentNullException>(() => aesGcm.initAESForDecryption(null, assocData, key));         // Must be thrown because of missing random
+            Assert.Throws<ArgumentNullException>(() => aesGcm.initAESForDecryption(tooShortIv, assocData, key));   // Must be thrown because of to few byte for random
 
             var tooShortKey = new byte[] { 0x00 };
-            Assert.Throws<ArgumentNullException>(() => new AesGcm(iv, assocData, null));          // Must be thrown because of missing key
-            Assert.Throws<ArgumentNullException>(() => new AesGcm(iv, assocData, tooShortKey));   // Must be thrown because of to few byte for key
+            Assert.Throws<ArgumentNullException>(() => aesGcm.initAESForDecryption(iv, assocData, null));          // Must be thrown because of missing key
+            Assert.Throws<ArgumentNullException>(() => aesGcm.initAESForDecryption(iv, assocData, tooShortKey));   // Must be thrown because of to few byte for key
         }
     }
 }

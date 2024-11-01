@@ -51,11 +51,11 @@ namespace lib_vau_csharp
             byte[][] headerBytes = new byte[][] { new byte[] { versionByte }, new byte[] { puByte }, new byte[] { requestByte }, requestCounterBytes, KeyId };
             byte[] header = Arrays.ConcatenateAll(headerBytes);
 
-            byte[] a = new byte[4];
-            new SecureRandom().NextBytes(a);
-            byte[] random = a.Concat(requestCounterBytes).ToArray();
+            byte[] random = new byte[4];
+            new SecureRandom().NextBytes(random);
 
-            AesGcm aesGcm = new AesGcm(random, header, encryptionVauKey);
+            AesGcm aesGcm = new AesGcm();
+            aesGcm.initAESForEncryption(random, GetRequestCounter(), header, encryptionVauKey);
             byte[] ciphertext = aesGcm.encryptData(plaintext);
             byte[][] concatBytes = new byte[][] { header, aesGcm.ivValue, ciphertext };
             byte[] bytes = Arrays.ConcatenateAll(concatBytes);
@@ -98,7 +98,8 @@ namespace lib_vau_csharp
             Array.Copy(ciphertext, 55, ct, 0, ct.Length);
             try
             {
-                AesGcm aesGcm = new AesGcm(iv, header, decryptionVauKey);
+                AesGcm aesGcm = new AesGcm();
+                aesGcm.initAESForDecryption(iv, header, decryptionVauKey);
                 return aesGcm.decryptData(ct);
             }
             catch (Exception e)

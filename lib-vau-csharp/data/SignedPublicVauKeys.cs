@@ -27,21 +27,16 @@ namespace lib_vau_csharp.data
 {
     public class SignedPublicVauKeys
     {
-        [JsonProperty("signed_pub_keys")]
         byte[] SignedPublicKeys;
-        [JsonProperty("signature-ES256")]
         byte[] SignatureEs256;
-        [JsonProperty("cert_hash")]
         byte[] CertHash;
-        [JsonProperty("cdv")]
         int Cdv;
-        [JsonProperty("ocsp_response")]
         byte[] OcspResponse;
 
         const string DIGESTSIGNER = "SHA-256withECDSA";
 
         [JsonConstructor]
-        public SignedPublicVauKeys([JsonProperty("signed_pub_keys")] byte[] signedPublicKeys, [JsonProperty("signature-ES256")] byte[] signatureEs256, [JsonProperty("cert_hash")] byte[] certHash, [JsonProperty("cdv")] int cdv, [JsonProperty("ocsp_response")] byte[] ocspResponse)
+        public SignedPublicVauKeys(byte[] signedPublicKeys, byte[] signatureEs256, byte[] certHash, int cdv, byte[] ocspResponse)
         {
             SignedPublicKeys = signedPublicKeys;
             SignatureEs256 = signatureEs256;
@@ -52,7 +47,7 @@ namespace lib_vau_csharp.data
 
         public static SignedPublicVauKeys Sign(byte[] serverAutCertificate, ECPrivateKeyParameters eCPrivateKeyParameters, byte[] ocspResponseAutCertificate, int cdv, VauPublicKeys vauServerKeys)
         {
-            byte[] encodedServerKeys = CborUtils.EncodeToCbor(vauServerKeys);
+            byte[] encodedServerKeys = VauPublicKeys.toCBOR(vauServerKeys).EncodeToBytes();
 
             return new SignedPublicVauKeys(
                 encodedServerKeys,
@@ -75,6 +70,16 @@ namespace lib_vau_csharp.data
         public VauPublicKeys ExtractVauKeys()
         {
             return VauPublicKeys.fromCbor(SignedPublicKeys);
+        }
+
+        public static CBORObject toCBOR(SignedPublicVauKeys signPublicKey)
+        {
+            return CBORObject.NewMap()
+                .Add("signed_pub_keys", signPublicKey.SignedPublicKeys)
+                .Add("signature-ES256", signPublicKey.SignatureEs256)
+                .Add("cert_hash", signPublicKey.CertHash)
+                .Add("cdv", signPublicKey.Cdv)
+                .Add("ocsp_response", signPublicKey.OcspResponse);
         }
 
         public static SignedPublicVauKeys fromCbor(byte[] encodedObject)

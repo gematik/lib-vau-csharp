@@ -19,6 +19,7 @@ using lib_vau_csharp.crypto;
 using lib_vau_csharp.data;
 using lib_vau_csharp_test.util;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
@@ -66,11 +67,11 @@ namespace lib_vau_csharp_test
             //Encrypt/Decrypt
             byte[] encryptedVauServerMessage = vauServerStateMachine.EncryptVauMessage(Encoding.ASCII.GetBytes("Hello World"));
             byte[] decryptedVauServerMessage = vauClientStateMachine.DecryptVauMessage(encryptedVauServerMessage);
-            Assert.AreEqual("Hello World", Encoding.UTF8.GetString(decryptedVauServerMessage));
+            ClassicAssert.AreEqual("Hello World", Encoding.UTF8.GetString(decryptedVauServerMessage));
 
             byte[] encryptedVauServerMessage2 = vauClientStateMachine.EncryptVauMessage(Encoding.ASCII.GetBytes("Hello World"));
             byte[] decryptedVauServerMessage2 = vauServerStateMachine.DecryptVauMessage(encryptedVauServerMessage2);
-            Assert.AreEqual("Hello World", Encoding.UTF8.GetString(decryptedVauServerMessage2));
+            ClassicAssert.AreEqual("Hello World", Encoding.UTF8.GetString(decryptedVauServerMessage2));
         }
 
     }

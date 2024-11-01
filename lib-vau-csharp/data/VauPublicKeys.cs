@@ -23,11 +23,8 @@ namespace lib_vau_csharp.data
 {
     public class VauPublicKeys : VauBasicPublicKey
     {
-        [JsonProperty("iat")]
         public int Iat { get; private set; }
-        [JsonProperty("exp")]
         public int Exp { get; private set; }
-        [JsonProperty("comment")]
         public string Comment { get; private set; }
 
         public VauPublicKeys(EccKyberKeyPair eccKyberKeyPair, string comment, TimeSpan validity) : base(eccKyberKeyPair)
@@ -38,11 +35,21 @@ namespace lib_vau_csharp.data
         }
 
         [JsonConstructor]
-        public VauPublicKeys([JsonProperty("ECDH_PK")] VauEccPublicKey ecdhPublicKey, [JsonProperty("Kyber768_PK")] byte[] kyberPublicKeyBytes, [JsonProperty("comment")] string comment, [JsonProperty("iat")] int iat, [JsonProperty("exp")] int exp) : base(ecdhPublicKey, kyberPublicKeyBytes)
+        public VauPublicKeys(VauEccPublicKey ecdhPublicKey,byte[] kyberPublicKeyBytes, string comment, int iat, int exp) : base(ecdhPublicKey, kyberPublicKeyBytes)
         {
             Iat = iat;
             Exp = exp;
             Comment = comment;
+        }
+
+        public static CBORObject toCBOR(VauPublicKeys pubKey)
+        {
+            return CBORObject.NewMap()
+                .Add("iat", pubKey.Iat)
+                .Add("exp", pubKey.Exp)
+                .Add("comment", pubKey.Comment)
+                .Add("ECDH_PK", VauEccPublicKey.toCBOR(pubKey.EcdhPublicKey))
+                .Add("Kyber768_PK", pubKey.KyberPublicKeyBytes);
         }
 
         public static VauPublicKeys fromCbor(byte[] encodedObject)

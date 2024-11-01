@@ -31,19 +31,16 @@ namespace lib_vau_csharp.data
         {
         }
 
-        [JsonConstructor]
-        public VauMessage1([JsonProperty("ECDH_PK")] VauEccPublicKey ecdhPublicKey, [JsonProperty("Kyber768_PK")] byte[] kyberPublicKey) : base(ecdhPublicKey, kyberPublicKey)
+        public VauMessage1(VauEccPublicKey ecdhPublicKey, byte[] kyberPublicKey) : base(ecdhPublicKey, kyberPublicKey)
         {
         }
 
-        public string toJSONSerialize()
+        public static CBORObject toCBOR(VauMessage1 message1)
         {
-            return JsonConvert.SerializeObject(this);
-        }
-
-        public byte[] toCBOR()
-        {
-            return CborUtils.EncodeToCbor(this);
+            return CBORObject.NewMap()
+                .Add("MessageType", message1.MessageType)
+                .Add("ECDH_PK", VauEccPublicKey.toCBOR(message1.EcdhPublicKey))
+                .Add("Kyber768_PK", message1.KyberPublicKeyBytes);
         }
 
         public static VauMessage1 fromCbor(byte[] encodedObject)

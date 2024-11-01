@@ -24,15 +24,19 @@ namespace lib_vau_csharp.data
     public class VauMessage4
     {
         private const string _messageType = "M4";
-        [JsonProperty("MessageType")]
         public string MessageType => _messageType;
-        [JsonProperty("AEAD_ct_key_confirmation")]
         public byte[] AeadCtKeyKonfirmation { get; private set; }
 
-        [JsonConstructor]
         public VauMessage4([JsonProperty("AEAD_ct_key_confirmation")] byte[] aeadCtKeyKonfirmation)
         {
             AeadCtKeyKonfirmation = aeadCtKeyKonfirmation;
+        }
+
+        public static CBORObject toCBOR(VauMessage4 message4)
+        {
+            return CBORObject.NewMap()
+                .Add("MessageType", message4.MessageType)
+                .Add("AEAD_ct_key_confirmation", message4.AeadCtKeyKonfirmation);
         }
 
         public static VauMessage4 fromCbor(byte[] encodedObject)
