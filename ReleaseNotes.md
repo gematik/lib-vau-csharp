@@ -2,6 +2,11 @@
 
 # Release notes lib-vau-csharp for ePA 3.x and above
 
+## Release 1.0.3
+- remove all JSON references and conversions.
+- fix bug in AES encryption/decryption
+- add new test class (EpaDeploymentTest) to communicate with epa deployment environment
+
 ## Release 1.0.2
 
 ### fixed
