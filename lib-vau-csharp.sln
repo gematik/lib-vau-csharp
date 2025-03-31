@@ -1,12 +1,13 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.35116.124
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lib-vau-csharp", "lib-vau-csharp\lib-vau-csharp.csproj", "{0A2D306D-909F-4480-A2AF-437B83AB2483}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jenkinsfiles", "jenkinsfiles", "{0BC2AF7A-EBD6-4F0E-90C3-F375BFDBFE1A}"
 	ProjectSection(SolutionItems) = preProject
 		jenkinsfiles\ci.jenkinsfile = jenkinsfiles\ci.jenkinsfile
+		jenkinsfiles\cross_tests_ci.jenkinsfile = jenkinsfiles\cross_tests_ci.jenkinsfile
 		jenkinsfiles\dependabot.jenkinsfile = jenkinsfiles\dependabot.jenkinsfile
 		jenkinsfiles\publishToGitHub.jenkinsfile = jenkinsfiles\publishToGitHub.jenkinsfile
 		jenkinsfiles\pullFromGitHubToGitLab.jenkinsfile = jenkinsfiles\pullFromGitHubToGitLab.jenkinsfile
@@ -23,6 +24,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ospo", "ospo", "{AE21E090-3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lib-vau-csharp-test", "lib-vau-csharp-test\lib-vau-csharp-test.csproj", "{CECC4305-C44C-4344-B733-48EFBB3E148C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vau-proxy-csharp", "vau-proxy-csharp\vau-proxy-csharp.csproj", "{99CA4075-8AB4-4A38-8967-DF9D53C59414}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VauProxyClientCSharp", "Docker\VauProxyClientCSharp\VauProxyClientCSharp.csproj", "{EA06F77C-2825-4B2E-857B-0E5CF8D46CB4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0632A505-E0F0-48BD-B70D-34A30D095D87}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +48,14 @@ Global
 		{CECC4305-C44C-4344-B733-48EFBB3E148C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CECC4305-C44C-4344-B733-48EFBB3E148C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CECC4305-C44C-4344-B733-48EFBB3E148C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99CA4075-8AB4-4A38-8967-DF9D53C59414}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99CA4075-8AB4-4A38-8967-DF9D53C59414}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99CA4075-8AB4-4A38-8967-DF9D53C59414}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99CA4075-8AB4-4A38-8967-DF9D53C59414}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA06F77C-2825-4B2E-857B-0E5CF8D46CB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA06F77C-2825-4B2E-857B-0E5CF8D46CB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA06F77C-2825-4B2E-857B-0E5CF8D46CB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA06F77C-2825-4B2E-857B-0E5CF8D46CB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

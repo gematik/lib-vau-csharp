@@ -17,10 +17,12 @@
 using lib_vau_csharp.exceptions;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Kems;
+using Org.BouncyCastle.Crypto.Parameters;
+
 using Org.BouncyCastle.Pqc.Crypto.Utilities;
 using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
 using System;
 
 namespace lib_vau_csharp.crypto
@@ -29,25 +31,24 @@ namespace lib_vau_csharp.crypto
     {
         public static AsymmetricCipherKeyPair GenerateKeyPair()
         {
-            KyberParameters kyberParameters = KyberParameters.kyber768;
-            KyberKeyGenerationParameters kyberKeyParameters = new KyberKeyGenerationParameters(new SecureRandom(), kyberParameters);
-            KyberKeyPairGenerator kpg = new KyberKeyPairGenerator();
+            MLKemParameters kyberParameters = MLKemParameters.ml_kem_768;
+            MLKemKeyGenerationParameters kyberKeyParameters = new MLKemKeyGenerationParameters(new SecureRandom(), kyberParameters);
+            MLKemKeyPairGenerator kpg = new MLKemKeyPairGenerator();
             kpg.Init(kyberKeyParameters);
             return kpg.GenerateKeyPair();
         }
 
-        public static SecretWithEncapsulationImpl pqcGenerateEncryptionKey(KyberPublicKeyParameters publicKey)
+        public static SecretWithEncapsulationImpl pqcGenerateEncryptionKey(MLKemPublicKeyParameters publicKey)
         {
             try
             {
-                KyberKemGenerator kyberKemGenerator = new KyberKemGenerator(new SecureRandom());
-                ISecretWithEncapsulation secretKeyWithEncapsulation = kyberKemGenerator.GenerateEncapsulated(publicKey);
-                byte[] ct = secretKeyWithEncapsulation.GetEncapsulation();
-                byte[] sharedSecret = secretKeyWithEncapsulation.GetSecret();
+                MLKemEncapsulator mLKemEncapsulator = new MLKemEncapsulator(MLKemParameters.ml_kem_768);
+                mLKemEncapsulator.Init(publicKey);
 
-                byte[] resultSecret = UsingLastOfficialKyberSpecification(sharedSecret, ct);
-
-                return new SecretWithEncapsulationImpl(resultSecret, ct);
+                var encapsulated = new byte[mLKemEncapsulator.EncapsulationLength];
+                var secret = new byte[mLKemEncapsulator.SecretLength];
+                mLKemEncapsulator.Encapsulate(encapsulated, 0, encapsulated.Length, secret, 0, secret.Length);
+                return new SecretWithEncapsulationImpl(secret, encapsulated);
             }
             catch (Exception e)
             {
@@ -55,25 +56,20 @@ namespace lib_vau_csharp.crypto
             }
         }
 
-        public static byte[] pqcGenerateEncryptionKey(KyberPrivateKeyParameters privateKey, byte[] ct)
+        public static byte[] pqcGenerateEncryptionKey(MLKemPrivateKeyParameters privateKey, byte[] ct)
         {
             try
             {
-                KyberKemExtractor kyberKemExtractor = new KyberKemExtractor(privateKey);
-                byte[] sharedSecret = kyberKemExtractor.ExtractSecret(ct);
-                return UsingLastOfficialKyberSpecification(sharedSecret, ct);
+                MLKemDecapsulator mLKemDecapsulator = new MLKemDecapsulator(MLKemParameters.ml_kem_768);
+                mLKemDecapsulator.Init(privateKey);
+                byte[] sharedSecret = new byte[mLKemDecapsulator.SecretLength];
+                mLKemDecapsulator.Decapsulate(ct, 0, ct.Length, sharedSecret, 0, sharedSecret.Length);
+                return sharedSecret;
             }
             catch (Exception e)
             {
                 throw new KyberException("Could not generate Kyber encryption key from private key", e);
             }
-        }
-
-        // This trick is necessary since BouncyCastle does not implement Kyber versio 3.0.2, but rather the current draft
-        // The trick is derived from https://words.filippo.io/dispatches/mlkem768/#bonus-track-using-a-ml-kem-implementation-as-kyber-v3
-        private static byte[] UsingLastOfficialKyberSpecification(byte[] sharedSecret, byte[] ct)
-        {
-            return Arrays.CopyOfRange(Shake256(Arrays.Concatenate(sharedSecret, Sha3_256(ct))), 0, 32);
         }
 
         private static byte[] Shake256(byte[] input)

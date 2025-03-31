@@ -19,7 +19,6 @@ using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
 
 namespace lib_vau_csharp_test
 {
@@ -38,8 +37,8 @@ namespace lib_vau_csharp_test
         public void TestKyberKeyGen()
         {
             AsymmetricCipherKeyPair kyberKeyPair = KyberCurve.GenerateKeyPair();
-            ClassicAssert.AreEqual(KyberParameters.kyber768, ((KyberPrivateKeyParameters)kyberKeyPair.Private).Parameters);
-            ClassicAssert.AreEqual(KyberParameters.kyber768, ((KyberPublicKeyParameters)kyberKeyPair.Public).Parameters);
+            ClassicAssert.AreEqual(MLKemParameters.ml_kem_768, ((MLKemPrivateKeyParameters)kyberKeyPair.Private).Parameters);
+            ClassicAssert.AreEqual(MLKemParameters.ml_kem_768, ((MLKemPublicKeyParameters)kyberKeyPair.Public).Parameters);
         }
     }
 }

@@ -22,7 +22,6 @@ using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
 using Org.BouncyCastle.Security;
 using System;
 using System.Text;
@@ -38,12 +37,24 @@ namespace lib_vau_csharp_test
             EllipticCurve ecCurve = EllipticCurve.GenerateEllipticCurve(EllipticCurve.SECP256R1);
             AsymmetricCipherKeyPair ecdhKeyPair = ecCurve.GenerateKeyPair();
             AsymmetricCipherKeyPair kyberKeyPair = KyberCurve.GenerateKeyPair();
-            KEM.EncapsulateMessage((ECPublicKeyParameters)ecdhKeyPair.Public, ((KyberPublicKeyParameters)kyberKeyPair.Public));
+            KEM.EncapsulateMessage((ECPublicKeyParameters)ecdhKeyPair.Public, ((MLKemPublicKeyParameters)kyberKeyPair.Public));
         }
 
         [Test]
         public void TestHandshake()
         {
+            doHandShakeTest(false);
+        }
+
+        [Test]
+        public void TestHandshakePU()
+        {
+            doHandShakeTest(true);
+        }
+
+        public void doHandShakeTest(bool isPu)
+        {
+
             EccKyberKeyPair eccKyberKeyPair = FileUtil.ReadEccKyberKeyPairFromFile(@"resources\\vau_server_keys.cbor");
             byte[] privateKeyBytes = FileUtil.ReadAllBytes(@"resources\\vau-sig-key.der");
             ECPrivateKeyParameters eCPrivateKeyParameters = (ECPrivateKeyParameters)PrivateKeyFactory.CreateKey(privateKeyBytes);
@@ -55,7 +66,9 @@ namespace lib_vau_csharp_test
             SignedPublicVauKeys signedPublicVauKeys = SignedPublicVauKeys.Sign(serverAutCertificate, eCPrivateKeyParameters, ocspResponseAutCertificate, 1, vauBasicPublicKey);
 
             VauServerStateMachine vauServerStateMachine = new VauServerStateMachine(signedPublicVauKeys, eccKyberKeyPair);
+            vauServerStateMachine.isPu = isPu;
             VauClientStateMachine vauClientStateMachine = new VauClientStateMachine();
+            vauClientStateMachine.isPu = isPu;
 
             //Generate Message 1
             byte[] message1Encoded = vauClientStateMachine.generateMessage1();
@@ -73,6 +86,5 @@ namespace lib_vau_csharp_test
             byte[] decryptedVauServerMessage2 = vauServerStateMachine.DecryptVauMessage(encryptedVauServerMessage2);
             ClassicAssert.AreEqual("Hello World", Encoding.UTF8.GetString(decryptedVauServerMessage2));
         }
-
     }
 }

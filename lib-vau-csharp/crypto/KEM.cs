@@ -20,7 +20,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
+using Org.BouncyCastle.Crypto.Kems;
 using Org.BouncyCastle.Pqc.Crypto.Utilities;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
@@ -99,7 +99,7 @@ namespace lib_vau_csharp.crypto
             return ct;
         }
 
-        public static KdfMessage EncapsulateMessage(ECPublicKeyParameters remoteEcdhPublicKey, KyberPublicKeyParameters kyberPublicKey)
+        public static KdfMessage EncapsulateMessage(ECPublicKeyParameters remoteEcdhPublicKey, MLKemPublicKeyParameters kyberPublicKey)
         {
             EllipticCurve ecCurve = EllipticCurve.GenerateEllipticCurve(EllipticCurve.SECP256R1);
             AsymmetricCipherKeyPair temporaryEcdhKeyPair = ecCurve.GenerateKeyPair();
@@ -118,7 +118,7 @@ namespace lib_vau_csharp.crypto
             ECPublicKeyParameters ecdhPublicKeySender = ciphertext.EcdhCt.ToEcPublicKey();          // A_24623: get EC public Key
             EllipticCurve ecCurve = EllipticCurve.GenerateEllipticCurve(EllipticCurve.SECP256R1);
             byte[] ecdhSharedSecret = ecCurve.GetSharedSecret(ecdhPublicKeySender, (ECPrivateKeyParameters)privateKeys.EcdhKeyPair.Private); //  A_24623: calculate secret: ss_e_ecdh with ec keypair
-            byte[] sharedSecretClient = KyberCurve.pqcGenerateEncryptionKey((KyberPrivateKeyParameters)privateKeys.KyberKeyPair.Private, ciphertext.KyberCt);  //  A_24623: calculate secret: ss_e_kyber768 with kyber keypair
+            byte[] sharedSecretClient = KyberCurve.pqcGenerateEncryptionKey((MLKemPrivateKeyParameters)privateKeys.KyberKeyPair.Private, ciphertext.KyberCt);  //  A_24623: calculate secret: ss_e_kyber768 with kyber keypair
             return new KdfMessage(null, ecdhSharedSecret, null, sharedSecretClient);
         }
 
@@ -127,7 +127,7 @@ namespace lib_vau_csharp.crypto
             EllipticCurve ecCurve = EllipticCurve.GenerateEllipticCurve(EllipticCurve.SECP256R1);
             ECPublicKeyParameters ecdhPublicKeySender = ciphertext.EcdhCt.ToEcPublicKey();
             byte[] ecdhSharedSecret = ecCurve.GetSharedSecret(ecdhPublicKeySender, (ECPrivateKeyParameters)privateKeys.EcdhKeyPair.Private);
-            byte[] sharedSecretClient = KyberCurve.pqcGenerateEncryptionKey((KyberPrivateKeyParameters)privateKeys.KyberKeyPair.Private, ciphertext.KyberCt);
+            byte[] sharedSecretClient = KyberCurve.pqcGenerateEncryptionKey((MLKemPrivateKeyParameters)privateKeys.KyberKeyPair.Private, ciphertext.KyberCt);
             return new KdfMessage(null, ecdhSharedSecret, null, sharedSecretClient);
         }
 

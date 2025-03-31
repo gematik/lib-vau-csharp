@@ -21,7 +21,6 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using PeterO.Cbor;
 using System;
-using System.Net;
 
 namespace lib_vau_csharp.data
 {

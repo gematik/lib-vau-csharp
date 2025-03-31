@@ -15,7 +15,6 @@
  */
 
 using lib_vau_csharp.util;
-using Newtonsoft.Json;
 using PeterO.Cbor;
 using System;
 
@@ -63,7 +62,7 @@ namespace lib_vau_csharp.data
             }
             catch (Exception e)
             {
-                throw new CBORException("Error when decoding CBOR to VauMessage2.", e.InnerException);
+                throw new CBORException("Error when decoding CBOR to VauMessage2.", e);
             }
         }
     }
