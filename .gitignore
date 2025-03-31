@@ -1,4 +1,25 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
 # Ignore all target directories
+
+/.vs
+/Docker/VauProxyClientCSharp/bin
+/Docker/VauProxyClientCSharp/obj
+/Docker/VauProxyClientCSharp/out
+/Docker/VauProxyClientCSharp/Properties/PublishProfiles/FolderProfile.pubxml.user
+/Docker/VauProxyServerCSharp/obj
+/Docker/VauProxyServerCSharp/bin
+/lib-vau-csharp/bin
+/lib-vau-csharp/obj
+/lib-vau-csharp-test/obj
+/lib-vau-csharp-test/bin
+/lib-vau-csharp-test/obj
+/vau-proxy-csharp/bin/*
+/vau-proxy-csharp/obj/*
+**/obj
+**/bin
 .config/
 .sonarqube/
 .store/
@@ -9,5 +30,15 @@ lib-vau-csharp-test/obj
 lib-vau-csharp-test/bin
 lib-vau-csharp-test/TestResults/
 sonarqubecoverage/
+Docker/VauProxyClientCSharp/bin
+Docker/VauProxyClientCSharp/DLLS
+Docker/VauProxyClientCSharp/obj
+Docker/VauProxyServerCSharp/bin
+Docker/VauProxyServerCSharp/DLLS
+Docker/VauProxyServerCSharp/obj
+
 /jenkinsfiles/
 /doc/
+/Docker/
+/vau-proxy-csharp/
+docker-compose.yaml

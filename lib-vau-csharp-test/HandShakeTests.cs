@@ -64,10 +64,10 @@ namespace lib_vau_csharp_test
         public static async Task TestSendingMessagesThroughChannel()
         {
             vauClient = new VauClient();
-            bool handshakeSucceeded = await vauClient.DoHandshake(url);
+            bool handshakeSucceeded = vauClient.DoHandshake(url).Result;
 
             ClassicAssert.IsTrue(handshakeSucceeded);
-            bool messagesExchanged = await vauClient.SendMessage(url, Encoding.UTF8.GetBytes("Hello World!"));
+            bool messagesExchanged = vauClient.SendMessage(url, Encoding.UTF8.GetBytes("Hello World!")).Result;
             ClassicAssert.IsTrue(messagesExchanged);
         }
     }

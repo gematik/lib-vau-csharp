@@ -39,13 +39,13 @@ namespace lib_vau_csharp
         public byte[] KeyId { get; protected set; }
         protected byte[] encryptionVauKey { get; set; }
         protected byte[] decryptionVauKey { get; set; }
-        private bool isPu { get; set; } = false;
+        public bool isPu { get; set; } = false;
         protected abstract bool ValidateKeyId(byte[] keyId);
 
         public virtual byte[] EncryptVauMessage(byte[] plaintext)
         {
             byte versionByte = 2;
-            byte puByte = 0;
+            byte puByte = (byte)(isPu ? 1 : 0);
             byte requestByte = GetRequestByte();
             byte[] requestCounterBytes = BitConverter.GetBytes(GetRequestCounter()).Reverse().ToArray();
             byte[][] headerBytes = new byte[][] { new byte[] { versionByte }, new byte[] { puByte }, new byte[] { requestByte }, requestCounterBytes, KeyId };
