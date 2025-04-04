@@ -2,6 +2,21 @@
 
 # Release notes lib-vau-csharp for ePA 3.x and above
 
+## Release 1.0.7
+- Added missing Release Notes
+
+## Release 1.0.6
+- Reverted Changes from 1.0.5 since Specification is not yet ML-KEM
+ 
+## Release 1.0.5
+- Updated Bouncy Castle to Version 2.5.1
+- Updated Kyber to ML-KEM
+- added PU option
+ 
+## Release 1.0.4
+- Added missing Release Notes
+
+
 ## Release 1.0.3
 - remove all JSON references and conversions.
 - fix bug in AES encryption/decryption
