@@ -18,6 +18,7 @@ using lib_vau_csharp.data;
 using lib_vau_csharp_test.util;
 using NUnit.Framework;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
 using Org.BouncyCastle.Security;
 using System;
 
@@ -33,8 +34,8 @@ namespace lib_vau_csharp_test
             Assert.That("EC", Is.EqualTo(((ECPublicKeyParameters)eccKyberKeyPair.EcdhKeyPair.Public).AlgorithmName));
             Assert.That("EC", Is.EqualTo(((ECPrivateKeyParameters)eccKyberKeyPair.EcdhKeyPair.Private).AlgorithmName));
 
-            Assert.That(MLKemParameters.ml_kem_768, Is.EqualTo(((MLKemPrivateKeyParameters)eccKyberKeyPair.KyberKeyPair.Private).Parameters));
-            Assert.That(MLKemParameters.ml_kem_768, Is.EqualTo(((MLKemPublicKeyParameters)eccKyberKeyPair.KyberKeyPair.Public).Parameters));
+            Assert.That(KyberParameters.kyber768, Is.EqualTo(((KyberPrivateKeyParameters)eccKyberKeyPair.KyberKeyPair.Private).Parameters));
+            Assert.That(KyberParameters.kyber768, Is.EqualTo(((KyberPublicKeyParameters)eccKyberKeyPair.KyberKeyPair.Public).Parameters));
         }
 
         [Test]

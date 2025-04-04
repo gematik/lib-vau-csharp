@@ -39,6 +39,5 @@ Docker/VauProxyServerCSharp/obj
 
 /jenkinsfiles/
 /doc/
-/Docker/
-/vau-proxy-csharp/
-docker-compose.yaml
+/Docker/VauProxyClientCSharp/bin
+/Docker/VauProxyServerCSharp/bin/

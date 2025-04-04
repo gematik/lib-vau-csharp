@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>vau_proxy_csharp</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ProxyTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\lib-vau-csharp\lib-vau-csharp.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -23,7 +23,7 @@ namespace lib_vau_csharp.data
     public class EccKyberKeyPair
     {
         internal static byte[] KyberPublicKeyEncodingHeader { get; } =
-            Hex.Decode("308204B2300B0609608648016503040402038204A100");
+            Hex.Decode("308204B4300D060B2B0601040181B01A050602038204A100");
 
         public readonly AsymmetricCipherKeyPair EcdhKeyPair;
         public readonly AsymmetricCipherKeyPair KyberKeyPair;
