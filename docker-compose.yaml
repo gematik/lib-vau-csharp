@@ -1,0 +1,37 @@
+# Common Health Check Properties
+x-healthcheck-config: &healthcheck-ref  
+  interval: 15s  
+  timeout: 10s  
+  retries: 100  
+  start_period: 30s
+
+name: dc-handshake-tests
+
+services:
+  vau-client:	
+    image: europe-west3-docker.pkg.dev/gematik-all-infra-prod/epa/vau-proxy-client-csharp:latest
+    container_name: vau-client-container
+    restart: 'no'
+    networks:
+      - handshake-network
+    depends_on:
+      vau-proxy-server:
+        condition: service_healthy
+
+
+  vau-proxy-server:
+    image: europe-west3-docker.pkg.dev/gematik-all-infra-prod/epa/vau-proxy-server:latest
+    container_name: vau-proxy-server
+    restart: 'no'
+    networks: 
+      - handshake-network
+    ports: 
+      - "8080:9020"
+    healthcheck:
+      test: ["CMD-SHELL", " netstat -an | grep -q 9020"]
+    environment:
+      - SERVER_SSL_ENABLED=false
+
+networks:
+  handshake-network:
+    name: handshake-network

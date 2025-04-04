@@ -19,7 +19,8 @@ using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
+using Org.BouncyCastle.Pqc.Crypto.Utilities;
 using Org.BouncyCastle.Utilities;
 using System;
 
@@ -48,7 +49,7 @@ namespace lib_vau_csharp.data
         {
             try
             {
-                byte[] verbosePublicKey = ((MLKemPublicKeyParameters)kyberKeyPair.Public).GetEncoded();
+                byte[] verbosePublicKey = ((KyberPublicKeyParameters)kyberKeyPair.Public).GetEncoded();
                 if (verbosePublicKey.Length == 1208)
                 {
                     Asn1InputStream asn1InputStream = new Asn1InputStream(verbosePublicKey);
@@ -64,10 +65,10 @@ namespace lib_vau_csharp.data
             }
         }
 
-        public MLKemPublicKeyParameters ToKyberPublicKey()
+        public KyberPublicKeyParameters ToKyberPublicKey()
         {
             byte[] x509certData = Arrays.Concatenate(EccKyberKeyPair.KyberPublicKeyEncodingHeader, KyberPublicKeyBytes);
-            return (MLKemPublicKeyParameters)PublicKeyFactory.CreateKey(x509certData);
+            return (KyberPublicKeyParameters)PqcPublicKeyFactory.CreateKey(x509certData);
         }
     }
 }

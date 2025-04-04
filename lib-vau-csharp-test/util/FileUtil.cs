@@ -19,6 +19,7 @@ using lib_vau_csharp.data;
 using lib_vau_csharp.exceptions;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
 using Org.BouncyCastle.Security;
 using PeterO.Cbor;
 using System;
@@ -76,8 +77,8 @@ namespace lib_vau_csharp_test.util
 
         private static AsymmetricCipherKeyPair readKyberKeypairFromPkcs8Pem(byte[] publicKeyBytes, byte[] privateKeyBytes)
         {
-            MLKemPublicKeyParameters kyberPublicKeyParameters = MLKemPublicKeyParameters.FromEncoding(MLKemParameters.ml_kem_768, publicKeyBytes);
-            MLKemPrivateKeyParameters kyberPrivateKeyParameters = MLKemPrivateKeyParameters.FromEncoding(MLKemParameters.ml_kem_768, privateKeyBytes);
+            KyberPublicKeyParameters kyberPublicKeyParameters = new KyberPublicKeyParameters(KyberParameters.kyber768, publicKeyBytes);
+            KyberPrivateKeyParameters kyberPrivateKeyParameters = new KyberPrivateKeyParameters(KyberParameters.kyber768, privateKeyBytes);
             return new AsymmetricCipherKeyPair(kyberPublicKeyParameters, kyberPrivateKeyParameters);
         }
     }

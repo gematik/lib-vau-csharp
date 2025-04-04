@@ -22,6 +22,7 @@ using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
 using Org.BouncyCastle.Security;
 using System;
 using System.Text;
@@ -37,7 +38,7 @@ namespace lib_vau_csharp_test
             EllipticCurve ecCurve = EllipticCurve.GenerateEllipticCurve(EllipticCurve.SECP256R1);
             AsymmetricCipherKeyPair ecdhKeyPair = ecCurve.GenerateKeyPair();
             AsymmetricCipherKeyPair kyberKeyPair = KyberCurve.GenerateKeyPair();
-            KEM.EncapsulateMessage((ECPublicKeyParameters)ecdhKeyPair.Public, ((MLKemPublicKeyParameters)kyberKeyPair.Public));
+            KEM.EncapsulateMessage((ECPublicKeyParameters)ecdhKeyPair.Public, ((KyberPublicKeyParameters)kyberKeyPair.Public));
         }
 
         [Test]
