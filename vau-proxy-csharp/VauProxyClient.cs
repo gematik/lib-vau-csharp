@@ -77,8 +77,7 @@ namespace vau_proxy_csharp
                     Cid = cidHeader?.ElementAt(0);
                 }
 
-                var context = await response.Content.ReadAsStreamAsync();
-                byte[] message2Encoded = StreamUtils.ReadStream(context);
+                byte[] message2Encoded = await response.Content.ReadAsByteArrayAsync();
                 return vauClientStateMachine.receiveMessage2(message2Encoded);
             }
             catch (Exception e)
@@ -96,8 +95,7 @@ namespace vau_proxy_csharp
 
             var response2 = client.PostAsync(baseUrl + Cid.Remove(0,1), content2).Result;
 
-            var context2 = await response2.Content.ReadAsStreamAsync();
-            byte[] message4Encoded = StreamUtils.ReadStream(context2);
+            byte[] message4Encoded = await response2.Content.ReadAsByteArrayAsync();
             vauClientStateMachine.receiveMessage4(message4Encoded);
             return true;
         }
