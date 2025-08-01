@@ -1,0 +1,46 @@
+name: "Continuous Integration"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore -c Release
+      - name: Run tests on Linux
+        run: dotnet test --no-build --framework net80 --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory "TestResults-${{ matrix.os }}"
+        if: matrix.os == 'ubuntu-latest'
+
+      - name: Run tests on Windows
+        run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory "TestResults-${{ matrix.os }}"
+        if: matrix.os == 'windows-latest'
+
+      - name: Test Report
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          name: 'dotnet-results-${{ matrix.os }}'
+          path: 'TestResults-${{ matrix.os }}/*.trx'
+          reporter: dotnet-trx
