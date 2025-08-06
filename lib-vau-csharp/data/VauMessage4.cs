@@ -15,7 +15,7 @@
  */
 
 using lib_vau_csharp.util;
-using Newtonsoft.Json;
+
 using PeterO.Cbor;
 using System;
 
@@ -27,7 +27,7 @@ namespace lib_vau_csharp.data
         public string MessageType => _messageType;
         public byte[] AeadCtKeyKonfirmation { get; private set; }
 
-        public VauMessage4([JsonProperty("AEAD_ct_key_confirmation")] byte[] aeadCtKeyKonfirmation)
+        public VauMessage4(byte[] aeadCtKeyKonfirmation)
         {
             AeadCtKeyKonfirmation = aeadCtKeyKonfirmation;
         }
