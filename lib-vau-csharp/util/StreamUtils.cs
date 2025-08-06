@@ -22,20 +22,12 @@ namespace lib_vau_csharp.util
     {
         public static byte[] ReadStream(Stream stream)
         {
-            byte[] bytes = null;
             using (stream)
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
-                int count = 0;
-                do
-                {
-                    byte[] buf = new byte[1024];
-                    count = stream.Read(buf, 0, 1024);
-                    ms.Write(buf, 0, count);
-                } while (stream.CanRead && count > 0);
-                bytes = ms.ToArray();
+                stream.CopyTo(ms);
+                return ms.ToArray();
             }
-            return bytes;
         }
     }
 }

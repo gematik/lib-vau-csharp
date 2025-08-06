@@ -15,7 +15,7 @@
  */
 
 using lib_vau_csharp.data;
-using lib_vau_csharp.util;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +53,7 @@ namespace lib_vau_csharp
             content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/cbor");
             var response = await client.PostAsync(baseUrl + "VAU", content);
 
-            var context = await response.Content.ReadAsStreamAsync();
+            var message2Encoded = await response.Content.ReadAsByteArrayAsync();
 
             IEnumerable<string> cidArray;
             if (!response.Headers.TryGetValues("VAU-CID", out cidArray))
@@ -63,7 +63,6 @@ namespace lib_vau_csharp
 
             var cid = cidArray.First();
             Cid = new ConnectionId(cid);
-            byte[] message2Encoded = StreamUtils.ReadStream(context);
             return vauClientStateMachine.receiveMessage2(message2Encoded);
         }
 
@@ -74,8 +73,7 @@ namespace lib_vau_csharp
 
             var response2 = await client.PostAsync(baseUrl + Cid.Cid, content2);
 
-            var context2 = await response2.Content.ReadAsStreamAsync();
-            byte[] message4Encoded = StreamUtils.ReadStream(context2);
+            byte[] message4Encoded = await response2.Content.ReadAsByteArrayAsync();
             vauClientStateMachine.receiveMessage4(message4Encoded);
             return true;
         }
@@ -88,8 +86,7 @@ namespace lib_vau_csharp
                 var content = new ByteArrayContent(cborEncodedMessage);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
                 var response = await client.PostAsync(baseUrl + Cid.Cid, content);
-                var context = await response.Content.ReadAsStreamAsync();
-                byte[] serverMessageEncoded = StreamUtils.ReadStream(context);
+                byte[] serverMessageEncoded = await response.Content.ReadAsByteArrayAsync();
                 string serverMessage = Encoding.UTF8.GetString(vauClientStateMachine.DecryptVauMessage(serverMessageEncoded));
                 Console.WriteLine($"Client received ServerMessage: {serverMessage}");
                 return response.StatusCode == System.Net.HttpStatusCode.OK;
