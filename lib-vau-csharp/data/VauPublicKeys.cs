@@ -15,7 +15,7 @@
  */
 
 using lib_vau_csharp.util;
-using Newtonsoft.Json;
+
 using PeterO.Cbor;
 using System;
 
@@ -34,7 +34,6 @@ namespace lib_vau_csharp.data
             Comment = comment;
         }
 
-        [JsonConstructor]
         public VauPublicKeys(VauEccPublicKey ecdhPublicKey,byte[] kyberPublicKeyBytes, string comment, int iat, int exp) : base(ecdhPublicKey, kyberPublicKeyBytes)
         {
             Iat = iat;

@@ -15,7 +15,7 @@
  */
 
 using lib_vau_csharp.util;
-using Newtonsoft.Json;
+
 using PeterO.Cbor;
 using System;
 
@@ -28,7 +28,6 @@ namespace lib_vau_csharp.data
         public bool Erp { get; private set; }
         public bool Eso { get; private set; }
 
-        [JsonConstructor]
         public VauMessage3InnerLayer(VauEccPublicKey ecdhCt, byte[] kyberCt, bool erp, bool eso)
         {
             EcdhCt = ecdhCt;

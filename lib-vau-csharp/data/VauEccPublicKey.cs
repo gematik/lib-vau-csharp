@@ -16,7 +16,7 @@
 
 using lib_vau_csharp.crypto;
 using lib_vau_csharp.util;
-using Newtonsoft.Json;
+
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using PeterO.Cbor;
@@ -37,7 +37,6 @@ namespace lib_vau_csharp.data
             Crv = "P-256";
         }
 
-        [JsonConstructor]
         public VauEccPublicKey(string crv, byte[] x, byte[] y)
         {
             Crv = crv;

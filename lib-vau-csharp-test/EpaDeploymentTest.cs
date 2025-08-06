@@ -17,7 +17,7 @@
 using lib_vau_csharp;
 using lib_vau_csharp.crypto;
 using lib_vau_csharp.data;
-using Newtonsoft.Json.Linq;
+
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

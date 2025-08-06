@@ -15,7 +15,7 @@
  */
 
 using lib_vau_csharp.exceptions;
-using Newtonsoft.Json;
+
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -37,7 +37,6 @@ namespace lib_vau_csharp.data
             KyberPublicKeyBytes = extractCompactKyberPublicKey(keyPair.KyberKeyPair);
         }
 
-        [JsonConstructor]
         public VauBasicPublicKey(VauEccPublicKey ecdhPublicKey, byte[] kyberPublicKeyBytes)
         {
             EcdhPublicKey = ecdhPublicKey;
