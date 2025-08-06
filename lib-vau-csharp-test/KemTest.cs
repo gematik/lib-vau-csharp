@@ -17,13 +17,13 @@
 using lib_vau_csharp;
 using lib_vau_csharp.crypto;
 using lib_vau_csharp.data;
-using lib_vau_csharp_test.util;
+
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
-using Org.BouncyCastle.Security;
+
 using System;
 using System.Text;
 
@@ -55,18 +55,10 @@ namespace lib_vau_csharp_test
 
         public void doHandShakeTest(bool isPu)
         {
+            VauPublicKeys vauBasicPublicKey = new VauPublicKeys(Constants.Keys.EccKyberKeyPair, "VAU Server Keys", TimeSpan.FromDays(30));
+            SignedPublicVauKeys signedPublicVauKeys = SignedPublicVauKeys.Sign(Constants.Certificates.ServerAutCertificate, Constants.Keys.ECPrivateKeyParameters, Constants.Certificates.OcspResponseAutCertificate, 1, vauBasicPublicKey);
 
-            EccKyberKeyPair eccKyberKeyPair = FileUtil.ReadEccKyberKeyPairFromFile(@"resources\\vau_server_keys.cbor");
-            byte[] privateKeyBytes = FileUtil.ReadAllBytes(@"resources\\vau-sig-key.der");
-            ECPrivateKeyParameters eCPrivateKeyParameters = (ECPrivateKeyParameters)PrivateKeyFactory.CreateKey(privateKeyBytes);
-
-            byte[] serverAutCertificate = FileUtil.ReadAllBytes(@"resources\\vau_sig_cert.der");
-            byte[] ocspResponseAutCertificate = FileUtil.ReadAllBytes(@"resources\\ocsp-response-vau-sig.der");
-
-            VauPublicKeys vauBasicPublicKey = new VauPublicKeys(eccKyberKeyPair, "VAU Server Keys", TimeSpan.FromDays(30));
-            SignedPublicVauKeys signedPublicVauKeys = SignedPublicVauKeys.Sign(serverAutCertificate, eCPrivateKeyParameters, ocspResponseAutCertificate, 1, vauBasicPublicKey);
-
-            VauServerStateMachine vauServerStateMachine = new VauServerStateMachine(signedPublicVauKeys, eccKyberKeyPair);
+            VauServerStateMachine vauServerStateMachine = new VauServerStateMachine(signedPublicVauKeys, Constants.Keys.EccKyberKeyPair);
             vauServerStateMachine.isPu = isPu;
             VauClientStateMachine vauClientStateMachine = new VauClientStateMachine();
             vauClientStateMachine.isPu = isPu;

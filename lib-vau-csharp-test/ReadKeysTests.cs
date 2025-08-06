@@ -19,7 +19,7 @@ using lib_vau_csharp_test.util;
 using NUnit.Framework;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Pqc.Crypto.Crystals.Kyber;
-using Org.BouncyCastle.Security;
+
 using System;
 
 namespace lib_vau_csharp_test
@@ -30,7 +30,7 @@ namespace lib_vau_csharp_test
         [Test]
         public void TestReadPrivateSpec()
         {
-            EccKyberKeyPair eccKyberKeyPair = FileUtil.ReadEccKyberKeyPairFromFile(@"resources\\vau_server_keys.cbor");
+            EccKyberKeyPair eccKyberKeyPair = FileUtil.ReadEccKyberKeyPairFromFile(Constants.Paths.VauServerKeys);
             Assert.That("EC", Is.EqualTo(((ECPublicKeyParameters)eccKyberKeyPair.EcdhKeyPair.Public).AlgorithmName));
             Assert.That("EC", Is.EqualTo(((ECPrivateKeyParameters)eccKyberKeyPair.EcdhKeyPair.Private).AlgorithmName));
 
@@ -41,15 +41,8 @@ namespace lib_vau_csharp_test
         [Test]
         public void TestSignPublicVauKeys()
         {
-            EccKyberKeyPair eccKyberKeyPair = FileUtil.ReadEccKyberKeyPairFromFile(@"resources\\vau_server_keys.cbor");
-            byte[] privateKeyBytes = FileUtil.ReadAllBytes(@"resources\\vau-sig-key.der");
-            ECPrivateKeyParameters eCPrivateKeyParameters = (ECPrivateKeyParameters)PrivateKeyFactory.CreateKey(privateKeyBytes);
-
-            byte[] serverAutCertificate = FileUtil.ReadAllBytes(@"resources\\vau_sig_cert.der");
-            byte[] ocspResponseAutCertificate = FileUtil.ReadAllBytes(@"resources\\ocsp-response-vau-sig.der");
-
-            VauPublicKeys vauBasicPublicKey = new VauPublicKeys(eccKyberKeyPair, "VAU Server Keys", TimeSpan.FromDays(30));
-            SignedPublicVauKeys signedPublicVauKeys = SignedPublicVauKeys.Sign(serverAutCertificate, eCPrivateKeyParameters, ocspResponseAutCertificate, 1, vauBasicPublicKey);
+            VauPublicKeys vauBasicPublicKey = new VauPublicKeys(Constants.Keys.EccKyberKeyPair, "VAU Server Keys", TimeSpan.FromDays(30));
+            SignedPublicVauKeys signedPublicVauKeys = SignedPublicVauKeys.Sign(Constants.Certificates.ServerAutCertificate, Constants.Keys.ECPrivateKeyParameters, Constants.Certificates.ServerAutCertificate, 1, vauBasicPublicKey);
 
             Assert.That(vauBasicPublicKey.Iat, Is.EqualTo(signedPublicVauKeys.ExtractVauKeys().Iat));
             Assert.That(vauBasicPublicKey.Exp, Is.EqualTo(signedPublicVauKeys.ExtractVauKeys().Exp));
