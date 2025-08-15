@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 using lib_vau_csharp.crypto;
@@ -29,8 +31,8 @@ namespace lib_vau_csharp
         private readonly EccKyberKeyPair clientKeyPair1;
         private KdfKey1 kdfClientKey1;
         private KdfKey2 kdfClientKey2;
-        private byte[] clientTranscript = new byte[0];
-        private readonly KEM kem = KEM.initializeKEM(KEM.KEMEngines.AesEngine, KEM.KEYSIZE_256);
+        private byte[] clientTranscript = Array.Empty<byte>();
+        private readonly Kem kem = Kem.initializeKem(Kem.KemEngines.AesEngine, Kem.KEYSIZE_256);
         private KdfMessage clientKemResult1, clientKemResult2;
         private long requestCounter { get; set; } = 0;
 
@@ -87,7 +89,7 @@ namespace lib_vau_csharp
 
         private byte[] EncapsulateMessage(VauPublicKeys transferredSignedServerPublicKeyList)
         {
-            this.clientKemResult2 = KEM.EncapsulateMessage(transferredSignedServerPublicKeyList.EcdhPublicKey.ToEcPublicKey(), transferredSignedServerPublicKeyList.ToKyberPublicKey());
+            this.clientKemResult2 = Kem.EncapsulateMessage(transferredSignedServerPublicKeyList.EcdhPublicKey.ToEcPublicKey(), transferredSignedServerPublicKeyList.ToKyberPublicKey());
             VauMessage3InnerLayer vauMessage3InnerLayer = new VauMessage3InnerLayer(clientKemResult2.EcdhCt, clientKemResult2.KyberCt, false, false);
 
             byte[] message3InnerLayerEncoded = VauMessage3InnerLayer.toCBOR(vauMessage3InnerLayer).EncodeToBytes();
@@ -97,7 +99,7 @@ namespace lib_vau_csharp
 
         private void DecapsulateMessage(VauMessage2 vauMessage2Client)
         {
-            this.clientKemResult1 = KEM.DecapsulateMessages(vauMessage2Client, clientKeyPair1); // A_24623: calculate secrets: ss_e_ecdh and ss_e_kyber768 
+            this.clientKemResult1 = Kem.DecapsulateMessages(vauMessage2Client, clientKeyPair1); // A_24623: calculate secrets: ss_e_ecdh and ss_e_kyber768 
             kdfClientKey1 = clientKemResult1.getKDFKey1();  // A_24623: get ss_e
         }
 

@@ -16,20 +16,13 @@
  * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
-namespace VauProxyClientCSharp;
+using System;
 
-class VauProxyClientCSharp()
+namespace lib_vau_csharp.exceptions
 {
-    static void Main(string[] args)
+    public class VauProxyException : Exception
     {
-        #pragma warning disable S5332
-        string target = "http://vau-proxy-server:9020/";
-        #pragma warning restore S5332
-
-        if (args.Length == 1)
-        {
-            target = args[0];
-        }
-        VauProxyClientApp.Run(target);
+        public VauProxyException(string message, Exception e) : base(message, e) { }
+        public VauProxyException(string message) : base(message) { }
     }
 }

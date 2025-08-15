@@ -12,8 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
+using Org.BouncyCastle.Crypto.Parameters;
 using System.Security.Cryptography;
 
 namespace lib_vau_csharp.util
@@ -22,9 +25,14 @@ namespace lib_vau_csharp.util
     {
         public static byte[] Sha256(byte[] input)
         {
+            #if (NET8_0_OR_GREATER)
+            var sha = SHA256.HashData(input);
+            return sha;
+            #else
             var sha256 = SHA256.Create();
             var sha = sha256.ComputeHash(input);
             return sha;
+            #endif
         }
     }
 }

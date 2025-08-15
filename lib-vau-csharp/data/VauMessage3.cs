@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 using lib_vau_csharp.util;
@@ -24,7 +26,7 @@ namespace lib_vau_csharp.data
     public class VauMessage3
     {
         private const string _messageType = "M3";
-        public string MessageType => _messageType;
+        public static string MessageType => _messageType;
         public byte[] AeadCt { get; private set; }
         public byte[] AeadCtKeyKonfirmation { get; private set; }
 
@@ -38,7 +40,7 @@ namespace lib_vau_csharp.data
         public static CBORObject toCBOR(VauMessage3 message3)
         {
             return CBORObject.NewMap()
-                .Add("MessageType", message3.MessageType)
+                .Add("MessageType", MessageType)
                 .Add("AEAD_ct", message3.AeadCt)
                 .Add("AEAD_ct_key_confirmation", message3.AeadCtKeyKonfirmation);
         }

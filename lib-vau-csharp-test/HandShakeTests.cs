@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 using lib_vau_csharp;
@@ -53,7 +55,7 @@ namespace lib_vau_csharp_test
         }
 
         [Test]
-        public static async Task TestSendingMessagesThroughChannel()
+        public static void TestSendingMessagesThroughChannel()
         {
             vauClient = new VauClient();
             bool handshakeSucceeded = vauClient.DoHandshake(url).Result;

@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 using lib_vau_csharp.util;
@@ -24,8 +26,8 @@ namespace lib_vau_csharp.data
     public class VauMessage1 : VauBasicPublicKey
     {
         private const string _messageType = "M1";
-        [JsonProperty("MessageType")]
-        public string MessageType => _messageType;
+        [JsonProperty(nameof(MessageType))]
+        public static string MessageType => _messageType;
 
         public VauMessage1(EccKyberKeyPair clientKey1) : base(clientKey1)
         {
@@ -38,7 +40,7 @@ namespace lib_vau_csharp.data
         public static CBORObject toCBOR(VauMessage1 message1)
         {
             return CBORObject.NewMap()
-                .Add("MessageType", message1.MessageType)
+                .Add("MessageType", MessageType)
                 .Add("ECDH_PK", VauEccPublicKey.toCBOR(message1.EcdhPublicKey))
                 .Add("Kyber768_PK", message1.KyberPublicKeyBytes);
         }

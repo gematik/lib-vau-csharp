@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 using lib_vau_csharp.data;
@@ -28,7 +30,7 @@ using System.Linq;
 
 namespace lib_vau_csharp.crypto
 {
-    public class KEM
+    public class Kem
     {
         private const int GcmIvLength = 12;
         private GcmBlockCipher gcmCipher = null;
@@ -36,21 +38,21 @@ namespace lib_vau_csharp.crypto
 
         public const int KEYSIZE_256 = 32;
 
-        public enum KEMEngines
+        public enum KemEngines
         {
             AesEngine = 0,
             AesLightEngine = 1
         }
 
-        public static KEM initializeKEM(KEMEngines ke, int keysize)
+        public static Kem initializeKem(KemEngines ke, int keysize)
         {
-            KEM kem = new KEM();
+            Kem kem = new Kem();
             switch (ke)
             {
-                case KEMEngines.AesEngine:
+                case KemEngines.AesEngine:
                     kem.gcmCipher = new GcmBlockCipher(new AesEngine());
                     break;
-                case KEMEngines.AesLightEngine:
+                case KemEngines.AesLightEngine:
                     kem.gcmCipher = new GcmBlockCipher(new AesLightEngine());
                     break;
                 default:
@@ -65,7 +67,7 @@ namespace lib_vau_csharp.crypto
             return kem;
         }
 
-        private KEM()
+        private Kem()
         {
         }
 

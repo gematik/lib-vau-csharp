@@ -12,10 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 using lib_vau_csharp.data;
-
+using lib_vau_csharp.exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +60,7 @@ namespace lib_vau_csharp
             IEnumerable<string> cidArray;
             if (!response.Headers.TryGetValues("VAU-CID", out cidArray))
             {
-                throw new Exception(); // TODO
+                throw new VauProxyException("Failed to retrieve CID from Header.");
             }
 
             var cid = cidArray.First();
