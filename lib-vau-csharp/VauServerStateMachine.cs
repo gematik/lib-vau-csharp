@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 using lib_vau_csharp.crypto;
@@ -34,7 +36,7 @@ namespace lib_vau_csharp
         private byte[] serverTranscript;
         private KdfKey2 serverKey2;
         private static readonly int ExpirationDays = 30;
-        private readonly KEM kem = KEM.initializeKEM(KEM.KEMEngines.AesEngine, KEM.KEYSIZE_256);
+        private readonly Kem kem = Kem.initializeKem(Kem.KemEngines.AesEngine, Kem.KEYSIZE_256);
         private long clientRequestCounter { get; set; }
         public VauServerStateMachine(SignedPublicVauKeys signedPublicVauKeys, EccKyberKeyPair serverVauKeys) : base()
         {
@@ -97,7 +99,7 @@ namespace lib_vau_csharp
 
         private byte[] EncapsulateMessage(VauMessage1 vauMessage1)
         {
-            kemResult1 = KEM.EncapsulateMessage(vauMessage1.EcdhPublicKey.ToEcPublicKey(), vauMessage1.ToKyberPublicKey());
+            kemResult1 = Kem.EncapsulateMessage(vauMessage1.EcdhPublicKey.ToEcPublicKey(), vauMessage1.ToKyberPublicKey());
             KdfKey1 serverKey1 = kemResult1.getKDFKey1();
             c2s = serverKey1.ClientToServer;
             s2c = serverKey1.ServerToClient;
@@ -110,7 +112,7 @@ namespace lib_vau_csharp
         {
             byte[] kemCertificatesEncoded = kem.DecryptAead(c2s, vauMessage3Server.AeadCt);
             VauMessage3InnerLayer kemCertificates = VauMessage3InnerLayer.fromCbor(kemCertificatesEncoded);
-            kemResult2 = KEM.DecapsulateMessages(kemCertificates, serverVauKeys);
+            kemResult2 = Kem.DecapsulateMessages(kemCertificates, serverVauKeys);
             serverKey2 = kemResult1.getKDFKey2(kemResult2);
             this.encryptionVauKey = serverKey2.ServerToClientAppData;
             this.decryptionVauKey = serverKey2.ClientToServerAppData;

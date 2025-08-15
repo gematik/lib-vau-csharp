@@ -12,31 +12,31 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
-using System.Text;
-using System.Web;
+using lib_vau_csharp.exceptions;
+using System;
 using vau_proxy_csharp;
 
 namespace VauProxyClientCSharp
+
 {
     public static class VauProxyClientApp
     {
-        private static VauProxyClient? vauClient = null;
-        private static string url = "http://localhost:8080/";
-        private static string testEndpoint = "test/ping";
 
-        public static async void Run(string targetAddress)
+        public static void Run(string targetAddress)
         {
             Console.WriteLine("Started Run.");
-            vauClient = new VauProxyClient();
+            VauProxyClient vauClient = new VauProxyClient();
             Console.WriteLine("Calling Handshake.");
             Task<bool> handShakeTask = vauClient.DoHandshake(targetAddress);
             handShakeTask.Wait();
             bool handshakeSucceeded = handShakeTask.Result;
             if (!handshakeSucceeded)
             {
-                throw new Exception("Error at Vau Proxy Client when attempting handshake.");
+                throw new VauProxyException("Error at Vau Proxy Client when attempting handshake.");
             }
             else
             {
@@ -45,7 +45,7 @@ namespace VauProxyClientCSharp
             bool statusCheckSucceeded = vauClient.TestVauStatus(targetAddress).Result;
             if (!statusCheckSucceeded)
             {
-                throw new Exception("Error at Vau Proxy Client when checking VAU Status.");
+                throw new VauProxyException("Error at Vau Proxy Client when checking VAU Status.");
             }
             else
             {

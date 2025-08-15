@@ -12,9 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 using lib_vau_csharp.data;
+using lib_vau_csharp.exceptions;
 using lib_vau_csharp.util;
 using System;
 using System.Net;
@@ -47,11 +50,11 @@ namespace lib_vau_csharp
 
                 if (context?.Request?.Url?.AbsolutePath == null)
                 {
-                    throw new Exception(); //TODO: Specify
+                    throw new VauProxyException("Failed to retrieve URL path from Context.");
                 }
 
                 switch (context.Request.Url.AbsolutePath)
-                { //TODO: make enum from strings
+                { 
                     case "/VAU":
                         await AnswerHandshake(context);
                         break;
@@ -66,12 +69,12 @@ namespace lib_vau_csharp
                             {
                                 await ReturnResponseMessage(context);
                             }
-                            else throw new Exception(); //TODO Specify!
+                            else throw new VauProxyException("Content Type needs to be 'cbor' or 'octet-stream'.");
                             break;
                         }
                         else
                         {
-                            throw new Exception(); //TODO: Specify
+                            throw new VauProxyException("Invalid Cid.");
                         }
                 }
             }

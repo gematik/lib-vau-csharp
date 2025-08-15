@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 using lib_vau_csharp;
@@ -38,7 +40,7 @@ namespace lib_vau_csharp_test
             EllipticCurve ecCurve = EllipticCurve.GenerateEllipticCurve(EllipticCurve.SECP256R1);
             AsymmetricCipherKeyPair ecdhKeyPair = ecCurve.GenerateKeyPair();
             AsymmetricCipherKeyPair kyberKeyPair = KyberCurve.GenerateKeyPair();
-            KEM.EncapsulateMessage((ECPublicKeyParameters)ecdhKeyPair.Public, ((KyberPublicKeyParameters)kyberKeyPair.Public));
+            Kem.EncapsulateMessage((ECPublicKeyParameters)ecdhKeyPair.Public, ((KyberPublicKeyParameters)kyberKeyPair.Public));
         }
 
         [Test]
@@ -53,7 +55,7 @@ namespace lib_vau_csharp_test
             doHandShakeTest(true);
         }
 
-        public void doHandShakeTest(bool isPu)
+        public static void doHandShakeTest(bool isPu)
         {
             VauPublicKeys vauBasicPublicKey = new VauPublicKeys(Constants.Keys.EccKyberKeyPair, "VAU Server Keys", TimeSpan.FromDays(30));
             SignedPublicVauKeys signedPublicVauKeys = SignedPublicVauKeys.Sign(Constants.Certificates.ServerAutCertificate, Constants.Keys.ECPrivateKeyParameters, Constants.Certificates.OcspResponseAutCertificate, 1, vauBasicPublicKey);

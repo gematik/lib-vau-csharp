@@ -2,6 +2,19 @@
 
 # Release notes lib-vau-csharp for ePA 3.x and above
 
+## Release 1.0.8
+- Merge Pull Request of Github
+  - Target .NET 8 and .NET Standard 2.0 #16
+  - Fix test failures under Linux #17
+- Refactoring
+  - Remove unused using statements
+  - Remove code smells identified by sonarqube
+- Update dependencies
+  - nunit to Version="4.3.2"
+  - NUnit3TestAdapter to Version="5.0.0"
+  - Microsoft.NET.Test.Sdk to Version="17.14.1"
+  - coverlet.collector to Version="6.0.4"
+
 ## Release 1.0.7
 - Added missing Release Notes
 

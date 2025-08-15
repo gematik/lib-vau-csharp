@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 using lib_vau_csharp.util;
@@ -27,11 +29,11 @@ namespace lib_vau_csharp.data
 {
     public class SignedPublicVauKeys
     {
-        byte[] SignedPublicKeys;
-        byte[] SignatureEs256;
-        byte[] CertHash;
-        int Cdv;
-        byte[] OcspResponse;
+        readonly byte[] SignedPublicKeys;
+        readonly byte[] SignatureEs256;
+        readonly byte[] CertHash;
+        readonly int Cdv;
+        readonly byte[] OcspResponse;
 
         const string DIGESTSIGNER = "SHA-256withECDSA";
 
@@ -49,6 +51,14 @@ namespace lib_vau_csharp.data
         {
             byte[] encodedServerKeys = VauPublicKeys.toCBOR(vauServerKeys).EncodeToBytes();
 
+            #if (NET8_0_OR_GREATER)
+            return new SignedPublicVauKeys(encodedServerKeys,
+                GenerateEccSignature(encodedServerKeys, eCPrivateKeyParameters),
+                SHA256.HashData(serverAutCertificate),
+                cdv,
+                ocspResponseAutCertificate
+                );
+            #else
             return new SignedPublicVauKeys(
                 encodedServerKeys,
                 GenerateEccSignature(encodedServerKeys, eCPrivateKeyParameters),
@@ -56,6 +66,7 @@ namespace lib_vau_csharp.data
                 cdv,
                 ocspResponseAutCertificate
                 );
+            #endif
         }
 
         private static byte[] GenerateEccSignature(byte[] tbsData, ECPrivateKeyParameters privateKey)
