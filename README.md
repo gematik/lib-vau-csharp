@@ -2,6 +2,8 @@
 
 Dieses Repository dient als Beispielimplementierung in C# und implementiert den kryptografischen Teil der Spezifikation des VAU-Protokolls für ePA für alle ([gemSpec_Krypt Kaptiel 7](https://gemspec.gematik.de/docs/gemSpec/gemSpec_Krypt/latest/#7)). 
 
+⚠️ **Warnung**: Dieses Repository enthält experimentelle Software, deren Sicherheit, Verlässlichkeit oder Korrektheit nicht überprüft wurde. Die Verwendung in einer Produktivumgebung wird explizit nicht empfohlen.
+
 ## Einschränkungen & Hinweise
 
 - Es werden keine Zertifikate geprüft. 
