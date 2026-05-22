@@ -22,7 +22,7 @@ namespace lib_vau_csharp.data
 {
     public class ConnectionId
     {
-        public string Cid { get; private set; }
+        public string Cid { get; }
         public ConnectionId(string cid)
         {
             Cid = cid;
@@ -32,6 +32,8 @@ namespace lib_vau_csharp.data
         {
             return new ConnectionId((DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond).ToString());
         }
+
+        public override string ToString() => Cid;
     }
 
 }

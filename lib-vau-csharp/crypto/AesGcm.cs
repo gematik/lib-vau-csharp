@@ -32,7 +32,7 @@ namespace lib_vau_csharp.crypto
         public byte[] ivValue { get; set; }
 
         public void initAESForEncryption(byte[] random,
-            long lCounter,
+            byte[] requestCounter,
             byte[] assocData,
             byte[] key)
         {
@@ -49,7 +49,7 @@ namespace lib_vau_csharp.crypto
             }
 
             KeyParameter keyParam = ParameterUtilities.CreateKeyParameter("AES", key);
-            ivValue = initializeIV(random, lCounter);
+            ivValue = initializeIV(random, requestCounter);
             var aes_parameters = new AeadParameters(keyParam, 128, ivValue, assocData);
             m_encCipher.Init(true, aes_parameters);
             m_decCipher.Init(false, aes_parameters);
@@ -78,7 +78,7 @@ namespace lib_vau_csharp.crypto
             m_decCipher.Init(false, aes_parameters);
         }
 
-        private static byte[] initializeIV(byte[] random, long lCounter)
+        private static byte[] initializeIV(byte[] random, byte[] requestCounter)
         {
             // A_24628 -> 32 Bit Random + 64 Bit Verschlüsselungszähler
             if (random?.Length != 4)
@@ -86,8 +86,8 @@ namespace lib_vau_csharp.crypto
                 throw new ArgumentNullException(nameof(random), "Invalid random value!");
             }
 
-            byte[] counter = BitConverter.GetBytes(lCounter).Reverse().ToArray();   // A_24629, A_24631 -> 64 Bit encryption counter
-            return random.Concat(counter).ToArray();                                // A_24628 -> concat random and counter
+            // A_24629, A_24631 -> 64 Bit encryption counter
+            return random.Concat(requestCounter).ToArray();                                // A_24628 -> concat random and counter
         }
 
         public byte[] encryptData(byte[] clearText)

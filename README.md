@@ -54,6 +54,11 @@ Diese wird in VauMessage 4 gespeichert und zurück zum Client geschickt.
 Der Client öffnet die Nachricht, entschlüsselt die Ciphertext-KeyConfirmation und vergleicht wieder den erhalten Hash mit selbst berechneten.
 Erst dann ist der Handshake abgeschlossen.
 
+## Nutzung mit den APIs des Aktensystems
+
+Unter Verwendung der Klasse `VauHttpClientHandler` lassen sich Aufrufe des Aktensystems via `HttpClient` transparent ver- und entschlüsseln. Die Tests in der Datei [VauClientTest.cs](lib-vau-csharp-test/VauClientTest.cs)
+zeigen beispielhaft, wie diese Klasse mit von [NSwag](https://github.com/RicoSuter/NSwag) generierten Clients genutzt werden kann.
+
 ## License
 
 Copyright 2024 gematik GmbH

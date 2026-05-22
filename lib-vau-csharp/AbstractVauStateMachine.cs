@@ -21,6 +21,7 @@ using lib_vau_csharp.exceptions;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
 using System;
+using System.Buffers.Binary;
 using System.Linq;
 
 namespace lib_vau_csharp
@@ -50,15 +51,15 @@ namespace lib_vau_csharp
             byte puByte = (byte)(isPu ? 1 : 0);
             byte requestByte = GetRequestByte();
             long requestCounter = GetRequestCounter();
-            byte[] requestCounterBytes = BitConverter.GetBytes(requestCounter).Reverse().ToArray();
-            byte[][] headerBytes = new byte[][] { new byte[] { versionByte }, new byte[] { puByte }, new byte[] { requestByte }, requestCounterBytes, KeyId };
+            byte[] requestCounterBytes = BitConverter.GetBytes(BinaryPrimitives.ReverseEndianness(requestCounter));
+            byte[][] headerBytes = [[versionByte], [puByte], [requestByte], requestCounterBytes, KeyId];
             byte[] header = Arrays.ConcatenateAll(headerBytes);
 
             byte[] random = new byte[4];
             new SecureRandom().NextBytes(random);
 
             AesGcm aesGcm = new AesGcm();
-            aesGcm.initAESForEncryption(random, requestCounter, header, encryptionVauKey);
+            aesGcm.initAESForEncryption(random, requestCounterBytes, header, encryptionVauKey);
             byte[] ciphertext = aesGcm.encryptData(plaintext);
             byte[][] concatBytes = new byte[][] { header, aesGcm.ivValue, ciphertext };
             byte[] bytes = Arrays.ConcatenateAll(concatBytes);

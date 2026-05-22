@@ -12,87 +12,190 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  */
 
 using lib_vau_csharp.data;
+using lib_vau_csharp.util;
 using lib_vau_csharp.exceptions;
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-
 
 namespace lib_vau_csharp
 {
+    [DebuggerDisplay("ConnectionId: {ConnectionId}")]
     public class VauClient
     {
-        readonly VauClientStateMachine vauClientStateMachine;
-        ConnectionId Cid;
+        private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, PropertyNamingPolicy = JsonNamingPolicy.KebabCaseUpper };
 
-        public VauClient()
+        private readonly HttpClient httpClient;
+        private readonly VauClientStateMachine vauClientStateMachine;
+
+        public AbstractVauStateMachine VauStateMachine => vauClientStateMachine;
+
+        public ConnectionId ConnectionId { get; private set; }
+
+        /// <summary>
+        /// Create a new instance of the <see cref="VauClient"/> class.
+        /// </summary>
+        /// <param name="httpClient">A <see cref="HttpClient"/> that is configured to communicate with a record system, i.e. has the proper base address set.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public VauClient(HttpClient httpClient)
         {
+            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+
             vauClientStateMachine = new VauClientStateMachine();
         }
 
-        public async Task<bool> DoHandshake(string baseUrl)
+        /// <summary>
+        /// Perform handshake with the VAU.
+        /// </summary>
+        /// <exception cref="HttpRequestException"></exception>
+        public async Task DoHandshake()
         {
-            using (var client = new HttpClient())
-            {
-                byte[] message3Encoded = await DoHandShakeStage1(baseUrl, client);
-                return await DoHandShakeStage2(baseUrl, client, message3Encoded);
-            }
+            if (ConnectionId != null)
+                throw new InvalidOperationException("Connection has already been established.");
+
+            byte[] message3Encoded = await DoHandShakeStage1();
+            await DoHandShakeStage2(message3Encoded);
         }
 
-        public async Task<byte[]> DoHandShakeStage1(string baseUrl, HttpClient client)
+        /// <summary>
+        /// Gets the VAU status for the current instance.
+        /// </summary>
+        /// <returns>An instance of <see cref="VauStatus"/>.</returns>
+        /// <exception cref="InvalidOperationException">Thrown in case the current instance is not connected to a VAU.</exception>
+        /// <exception cref="HttpRequestException"></exception>
+        public async Task<VauStatus> GetStatus()
+        {
+            EnsureConnected();
+
+            using var response = await SendMessage(Encoding.UTF8.GetBytes(VauRequest.Status)).ConfigureAwait(false);
+            using var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync();
+            return JsonSerializer.Deserialize<VauStatus>(stream, JsonSerializerOptions);
+        }
+
+        public async Task<HttpResponseMessage> SendMessage(byte[] message)
+        {
+            if (message == null)
+                throw new ArgumentNullException(nameof(message));
+
+            EnsureConnected();
+
+            byte[] cborEncodedMessage = vauClientStateMachine.EncryptVauMessage(message);
+            using var content = new ByteArrayContent(cborEncodedMessage);
+            content.Headers.ContentType = MediaTypeHeader.Octet;
+            var response = await httpClient.PostAsync(ConnectionId.Cid, content).ConfigureAwait(false);
+            byte[] serverMessageEncoded = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+            var decryptedResponse = vauClientStateMachine.DecryptVauMessage(serverMessageEncoded);
+
+            VauResponse.Parse(decryptedResponse, response);
+            return response;
+        }
+
+        /// <summary>
+        /// Encrypts the given <paramref name="httpRequest"/> to send to the VAU.
+        /// </summary>
+        /// <param name="httpRequest">The request to encrypt.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException">Thrown in case the current instance is not connected to a VAU.</exception>
+        public async Task EncryptRequest(HttpRequestMessage httpRequest) => await EncryptRequest(httpRequest, httpRequest.RequestUri).ConfigureAwait(false);
+
+        /// <summary>
+        /// Encrypts the given <paramref name="httpRequest"/> to send to the VAU using the provided <paramref name="uri"/>.
+        /// </summary>
+        /// <param name="httpRequest">The request to encrypt.</param>
+        /// <param name="uri">The uri to send the <paramref name="httpRequest"/>to.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException">Thrown in case the current instance is not connected to a VAU.</exception>
+        public async Task EncryptRequest(HttpRequestMessage httpRequest, Uri uri)
+        {
+            if (httpRequest == null)
+                throw new ArgumentNullException(nameof(httpRequest));
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+
+            EnsureConnected();
+
+            string request = await VauRequest.Create(httpRequest, uri);
+
+            byte[] cborEncodedMessage = vauClientStateMachine.EncryptVauMessage(Encoding.UTF8.GetBytes(request));
+
+            var content = new ByteArrayContent(cborEncodedMessage);
+            content.Headers.ContentType = MediaTypeHeader.Octet;
+
+            httpRequest.Headers.Accept.Add(MediaTypeHeader.Octet);
+            httpRequest.Content = content;
+            httpRequest.Method = HttpMethod.Post;
+        }
+
+        /// <summary>
+        /// Decrypts the given <paramref name="response"/> received from the VAU.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException">Thrown in case the current instance is not connected to a VAU.</exception>
+        public async Task DecryptResponse(HttpResponseMessage response)
+        {
+            if (response == null)
+                throw new ArgumentNullException(nameof(response));
+
+            EnsureConnected();
+
+            byte[] encryptedResponse = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+            byte[] decryptedResponse = vauClientStateMachine.DecryptVauMessage(encryptedResponse);
+
+            VauResponse.Parse(decryptedResponse, response);
+        }
+
+        private async Task<byte[]> DoHandShakeStage1()
         {
             var message1Encoded = vauClientStateMachine.generateMessage1();
 
             var content = new ByteArrayContent(message1Encoded);
-            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/cbor");
-            var response = await client.PostAsync(baseUrl + "VAU", content);
+            content.Headers.ContentType = MediaTypeHeader.Cbor;
 
-            var message2Encoded = await response.Content.ReadAsByteArrayAsync();
+            using var response = await httpClient.PostAsync("VAU", content).ConfigureAwait(false);
 
-            IEnumerable<string> cidArray;
-            if (!response.Headers.TryGetValues("VAU-CID", out cidArray))
+            var message2Encoded = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+
+            if (!response.Headers.TryGetValues("VAU-CID", out IEnumerable<string> cidArray))
             {
                 throw new VauProxyException("Failed to retrieve CID from Header.");
             }
 
             var cid = cidArray.First();
-            Cid = new ConnectionId(cid);
+            ConnectionId = new ConnectionId(cid);
             return vauClientStateMachine.receiveMessage2(message2Encoded);
         }
 
-        public async Task<bool> DoHandShakeStage2(string baseUrl, HttpClient client, byte[] message3Encoded)
+        private async Task DoHandShakeStage2(byte[] message3Encoded)
         {
             var content2 = new ByteArrayContent(message3Encoded);
-            content2.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/cbor");
+            content2.Headers.ContentType = MediaTypeHeader.Cbor;
 
-            var response2 = await client.PostAsync(baseUrl + Cid.Cid, content2);
+            using var response2 = await httpClient.PostAsync(ConnectionId.Cid, content2).ConfigureAwait(false);
 
-            byte[] message4Encoded = await response2.Content.ReadAsByteArrayAsync();
+            byte[] message4Encoded = await response2.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
             vauClientStateMachine.receiveMessage4(message4Encoded);
-            return true;
         }
 
-        public async Task<bool> SendMessage(string baseUrl, byte[] message)
+        private void EnsureConnected()
         {
-            using (var client = new HttpClient())
-            {
-                byte[] cborEncodedMessage = vauClientStateMachine.EncryptVauMessage(message);
-                var content = new ByteArrayContent(cborEncodedMessage);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
-                var response = await client.PostAsync(baseUrl + Cid.Cid, content);
-                byte[] serverMessageEncoded = await response.Content.ReadAsByteArrayAsync();
-                string serverMessage = Encoding.UTF8.GetString(vauClientStateMachine.DecryptVauMessage(serverMessageEncoded));
-                Console.WriteLine($"Client received ServerMessage: {serverMessage}");
-                return response.StatusCode == System.Net.HttpStatusCode.OK;
-            }
+            if (ConnectionId == null)
+                throw new InvalidOperationException($"No connection has been established, call {nameof(DoHandshake)} first.");
         }
+    }
+
+    public record VauStatus(string VauType, string VauVersion, string UserAuthentication, [property: JsonPropertyName("KeyID")] string KeyId, string ConnectionStart)
+    {
+        public bool IsTelematikIdAuthenticated(string telematikId) => UserAuthentication.Contains(telematikId);
     }
 }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net48;net80</TargetFrameworks>
     <IsPackable>false</IsPackable>
-	<LangVersion>10.0</LangVersion>
+	<LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,6 +33,14 @@
     <PackageReference Include="nunit" Version="4.4.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.8" />
+    <PackageReference Include="NSwag.MSBuild" Version="14.4.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Verify.NUnit" Version="30.7.3" />
+    <PackageReference Include="Verify.PdfPig" Version="2.1.0" />
     <ProjectReference Include="..\lib-vau-csharp\lib-vau-csharp.csproj" />
   </ItemGroup>
   

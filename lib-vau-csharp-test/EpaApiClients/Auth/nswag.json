@@ -1,0 +1,57 @@
+{
+  "runtime": "net80",
+  "documentGenerator": {
+    "fromDocument": {
+      "url": "https://raw.githubusercontent.com/gematik/ePA-Basic/refs/heads/ePA-3.0.5/src/openapi/I_Authorization_Service.yaml",
+      "newLineBehavior": "Auto"
+    }
+  },
+  "codeGenerators": {
+    "openApiToCSharpClient": {
+      "generateClientClasses": true,
+      "generateDtoTypes": true,
+      "injectHttpClient": true,
+      "disposeHttpClient": false,
+      "generateExceptionClasses": true,
+      "exceptionClass": "AuthorizationServiceException",
+      "wrapDtoExceptions": true,
+      "useHttpClientCreationMethod": false,
+      "httpClientType": "System.Net.Http.HttpClient",
+      "useHttpRequestMessageCreationMethod": false,
+      "useBaseUrl": false,
+      "generateBaseUrlProperty": false,
+      "generateSyncMethods": false,
+      "exposeJsonSerializerSettings": false,
+      "generateClientInterfaces": true,
+      "clientClassAccessModifier": "public",
+      "typeAccessModifier": "public",
+      "generateContractsOutput": false,
+      "parameterDateTimeFormat": "s",
+      "generateUpdateJsonSerializerSettingsMethod": true,
+      "serializeTypeInformation": false,
+      "queryNullValue": "",
+      "className": "AuthorizationServiceClient",
+      "operationGenerationMode": "MultipleClientsFromOperationId",
+      "generateOptionalParameters": false,
+      "generateJsonMethods": false,
+      "wrapResponses": false,
+      "generateResponseClasses": true,
+      "responseClass": "AuthorizationServiceResponse",
+      "requiredPropertiesMustBeDefined": true,
+      "dateType": "System.DateTime",
+      "dateTimeType": "System.DateTime",
+      "timeType": "System.TimeSpan",
+      "timeSpanType": "System.TimeSpan",
+      "generateDefaultValues": true,
+      "generateDataAnnotations": false,
+      "excludedTypeNames": [],
+      "handleReferences": false,
+      "namespace": "lib_vau_csharp_test.EpaApiClients.Auth",
+      "generateImmutableArrayProperties": false,
+      "generateImmutableDictionaryProperties": false,
+      "output": "AuthorizationServiceClient.cs",
+      "jsonLibrary": "SystemTextJson",
+      "jsonSerializerSettingsTransformationMethod": null
+    }
+  }
+}

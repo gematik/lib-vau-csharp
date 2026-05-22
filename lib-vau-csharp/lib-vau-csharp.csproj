@@ -3,15 +3,21 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net80</TargetFrameworks>
     <RootNamespace>lib_vau_csharp</RootNamespace>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
     <PackageReference Include="PeterO.Cbor" Version="4.5.5" />
+    <PackageReference Include="System.Text.Json" Version="8.0.6" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="lib-vau-csharp-test" />
+  </ItemGroup>
+  
 </Project>

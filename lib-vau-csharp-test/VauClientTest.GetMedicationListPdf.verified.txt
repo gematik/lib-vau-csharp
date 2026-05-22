@@ -1,0 +1,95 @@
+﻿{
+  Information: {
+    Producer: iText® 5.5.13.4 ©2000-2024 iText Group NV (AGPL-version),
+    Title: Medikationsliste,
+    CreationDate: DateTimeOffset_1,
+    ModifiedDate: DateTimeOffset_1
+  },
+  Pages: [
+    {
+      Rotation: {
+        Value: 90,
+        SwapsAxis: true,
+        Radians: -1.5707963267949
+      },
+      Text:
+Verordnung
+sdatum
+Dispensierd
+atum
+Wirkstoffname Wirkst
+ärke
+Arzneimittelbez
+eichnung
+Form Dosiera
+ngabe/
+Gebrau
+chsanw
+eisung
+PZN Verordner abgebende
+Apotheke
+
+01.07.2024 22.07.2024 - 1-0-1 Dr. Max
+Manfred
+Mustermann
+Arztpraxis Dr.
+Mustermann
+Arztpraxis Dr.
+Mustermann
+
+01.07.2024 25.07.2024
+Ibuprofen
+(substance)
+400 mg 10019621
+IBU-ratiopharm
+400mg akut
+Schmerztablette
+n
+Ibuprofen
+(substance)
+TAB 1-0-1 10019621 Dr. Max
+Manfred
+Mustermann
+Arztpraxis Dr.
+Mustermann
+Arztpraxis Dr.
+Mustermann
+
+13.01.2024 14.01.2024 - 10019621
+IBU-ratiopharm
+400mg akut
+Schmerztablette
+n
+1-0-1 10019621 Dr. Max
+Manfred
+Mustermann
+Arztpraxis Dr.
+Mustermann
+Arztpraxis Dr.
+Mustermann
+
+12.01.2024 17.01.2024
+Doxorubicin
+85 mg
+Doxorubicin
+112100
+00
+1-0-1 Dr. Max
+Manfred
+Mustermann
+Arztpraxis Dr.
+Mustermann
+Arztpraxis Dr.
+Mustermann
+
+01.01.2024 16.02.2024 - 1-0-1 Dr. Max
+Manfred
+Mustermann
+Arztpraxis Dr.
+Mustermann
+Arztpraxis Dr.
+Mustermann
+
+    }
+  ]
+}

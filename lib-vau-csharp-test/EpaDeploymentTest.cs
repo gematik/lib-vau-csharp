@@ -18,6 +18,7 @@
 
 using lib_vau_csharp;
 using lib_vau_csharp.crypto;
+
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -26,19 +27,18 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
+using lib_vau_csharp.util;
+
 namespace lib_vau_csharp_test
 {
+    [Explicit]
     public class EpaDeploymentTest
     {
-        private static string epaUrl = "http://localhost:443/";
         private static string HEADER_VAU_CID = "VAU-CID";
         private static string HEADER_VAU = "VAU";
         private static HttpClient Client = new HttpClient();
         private VauClientStateMachine vauClientStateMachine;
 
-        private static String GET_VAUSTATUS = "GET /VAU-Status HTTP/1.1\r\nAccept: application / json\r\n\r\n";
-        private static MediaTypeWithQualityHeaderValue cborType = new MediaTypeWithQualityHeaderValue("application/cbor");
-        private static MediaTypeWithQualityHeaderValue octetType = new MediaTypeWithQualityHeaderValue("application/octet-stream");
         private String epaCID = "";
 
         [SetUp]
@@ -48,7 +48,7 @@ namespace lib_vau_csharp_test
             Kem.initializeKem(Kem.KemEngines.AesEngine, Kem.KEYSIZE_256);
         }
 
-        // [Test]
+        [Test]
         public async Task TestEpaDeployment()
         {
             await DoHandshake();
@@ -58,36 +58,32 @@ namespace lib_vau_csharp_test
         private async Task DoHandshake()
         {
             var message1Encoded = vauClientStateMachine.generateMessage1();
-            byte[] message2Encoded = await sendStreamAsPOST(epaUrl + HEADER_VAU, message1Encoded, cborType);
+            byte[] message2Encoded = await SendStreamAsPost(Constants.EpaDeploymentUrl + HEADER_VAU, message1Encoded, MediaTypeHeader.Cbor);
 
             byte[] message3Encoded = vauClientStateMachine.receiveMessage2(message2Encoded);
-            byte[] message4Encoded = await sendStreamAsPOST(epaUrl + epaCID, message3Encoded, cborType);
-            vauClientStateMachine.receiveMessage4(message4Encoded);
+            byte[] message4Encoded = await SendStreamAsPost(Constants.EpaDeploymentUrl + epaCID, message3Encoded, MediaTypeHeader.Cbor);
+            vauClientStateMachine.receiveMessage4(message4Encoded);    
         }
 
-        private async Task DoMessageTest()
+        private async Task DoMessageTest() 
         {
-            byte[] encrypted = vauClientStateMachine.EncryptVauMessage(Encoding.ASCII.GetBytes(GET_VAUSTATUS));
-            byte[] message5Encoded = await sendStreamAsPOST(epaUrl + epaCID, encrypted, octetType);
+            byte[] encrypted = vauClientStateMachine.EncryptVauMessage(Encoding.ASCII.GetBytes(VauRequest.Status));
+            byte[] message5Encoded = await SendStreamAsPost(Constants.EpaDeploymentUrl + epaCID, encrypted, MediaTypeHeader.Octet);
             byte[] pDecodedMessage = vauClientStateMachine.DecryptVauMessage(message5Encoded);
             Console.WriteLine($"Client received VAU Status: \r\n{Encoding.UTF8.GetString(pDecodedMessage)}");
         }
 
-        private void handleCID(HttpResponseMessage response)
+        private void HandleCid(HttpResponseMessage response)
         {
             IEnumerable<string> cidHeader = new List<string>();
             if (response?.Headers?.TryGetValues(HEADER_VAU_CID, out cidHeader) ?? false)
             {
                 string[] vecStr = (string[])cidHeader;
-                #if (NET8_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER)
-                epaCID = vecStr[0].StartsWith('/') ? vecStr[0].Remove(0, 1) : vecStr[0];
-                #else
                 epaCID = vecStr[0].StartsWith("/") ? vecStr[0].Remove(0, 1) : vecStr[0];
-                #endif
             }
         }
 
-        private async Task<byte[]> sendStreamAsPOST(String url, byte[] messageEncoded, MediaTypeWithQualityHeaderValue mediaType)
+        private async Task<byte[]> SendStreamAsPost(String url, byte[] messageEncoded, MediaTypeWithQualityHeaderValue mediaType)
         {
             var content = new ByteArrayContent(messageEncoded);
             content.Headers.ContentType = mediaType;
@@ -97,7 +93,7 @@ namespace lib_vau_csharp_test
             {
                 throw new Exception(response.ReasonPhrase);
             }
-            handleCID(response);
+            HandleCid(response);
             byte[] bytes = await response.Content.ReadAsByteArrayAsync();
             return bytes;
         }
